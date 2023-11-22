@@ -255,7 +255,21 @@ export class Validator<T> {
     });
     return this;
   }
-
+  wholeNumber(message?: string): this {
+    this.rules.push({
+      check: (value: T) => {
+        if (typeof value === 'string') {
+          const decimalRegex = /[.,]/;
+          return !decimalRegex.test(value) || /^\d+$/.test(value);
+        } else if (typeof value === 'number') {
+          return Number.isInteger(value);
+        }
+        return true; // For other types, consider it as valid
+      },
+      message: this.getDefaultMessage('noDecimalPoints', message),
+    });
+    return this;
+  }
   lessOrEqualThan(compareValue: T, message?: string): this {
     this.rules.push({
       check: (value: T | undefined) => value !== undefined && value !== null && value <= compareValue,
