@@ -35,7 +35,7 @@
 </template>
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import {Validator} from "src/composables/validator";
+import {Validator} from "quasar-easy-validate";
 
 export type UserData = {
   name: string,

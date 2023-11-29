@@ -46,7 +46,7 @@ import useNotificationMessage from "src/composables/notificationMessage";
 import ColorPickerDialog from 'components/dialogs/ColorPickerDialog.vue';
 import BaseHeader from "components/BaseHeader.vue";
 import BaseTooltip from "components/BaseTooltip.vue";
-import {Validator} from "src/composables/validator";
+import {Validator} from "quasar-easy-validate";
 
 const settingsStore = useSettingsStore();
 

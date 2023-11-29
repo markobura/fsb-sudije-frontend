@@ -52,7 +52,6 @@ import {reactive, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {useAuthenticatedUserStore} from "stores/authUserStore";
 import {Validator} from "quasar-easy-validate";
-// import {Validator} from "src/composables/validator";
 
 const router = useRouter();
 const userStore = useAuthenticatedUserStore();

@@ -19,7 +19,6 @@
 import {reactive, ref} from "vue";
 import {useUserStore} from "stores/userStore";
 import BaseHeader from "components/BaseHeader.vue";
-import {Validator} from "src/composables/validator";
 import UserForm, {UserData} from "components/UserForm.vue";
 
 
