@@ -22,6 +22,7 @@
     "echarts": "^5.4.1",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
+    "quasar-easy-validate": "^1.0.0",
     "sortablejs": "^1.15.0",
     "vue": "^3.0.0",
     "vue-json-pretty": "^2.2.4",
