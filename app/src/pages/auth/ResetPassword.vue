@@ -99,7 +99,6 @@ async function onSubmit(){
   }
 
   const responseMessage = await userStore.resetPassword(resetPasswordRequest);
-  useNotificationMessage('success', responseMessage);
   await router.replace({
     name: 'login'
   })
