@@ -52,10 +52,10 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
 
 
     async forgotPassword(email: string) {
-      const {message} = await useFetch<ForgotPasswordResponse, string>({
+      const {message} = await useFetch<ForgotPasswordResponse, { email: string }>({
         url: '/auth/forgot-password',
         method: HttpMethod.POST,
-        data: email
+        data: {email}
       });
       useNotificationMessage(NotificationType.SUCCESS, message)
 

@@ -59,7 +59,6 @@ function redirectToLogin() {
 //ON SUBMIT START
 async function onSubmit(){
   const responseMessage = await userStore.forgotPassword(email.value);
-  useNotificationMessage('success',responseMessage);
   await router.replace({
     name: 'login'
   })
