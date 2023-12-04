@@ -50,11 +50,11 @@ const routes: RouteRecordRaw[] = [
     redirect: {name: 'login'},
     children: [
       {path: 'login', component: () => import('pages/LoginPage.vue'), name: 'login'},
-      {path: 'forgot-password', component: () => import('pages/auth/ForgotPassword.vue'), name: 'forgot-password'},
-      {path: 'reset-password/:token/', component: () => import('pages/auth/ResetPassword.vue'), name: 'reset-password'},
+      {path: 'forgot-password', component: () => import('pages/ForgotPasswordPage.vue'), name: 'forgot-password'},
+      {path: 'reset-password/:token/', component: () => import('pages/ResetPasswordPage.vue'), name: 'reset-password'},
       {
         path: 'activate-account/:token/',
-        component: () => import('pages/auth/ActivateAccount.vue'),
+        component: () => import('pages/ActivateAccountPage.vue'),
         name: 'activate-account'
       },
     ],
