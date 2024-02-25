@@ -1,8 +1,12 @@
 <template>
   <q-page padding>
     <q-card class="my-card">
-      <q-card-section class="bg-primary">
-        <q-img src="/images/blank-image.jpg" style="max-height: 150px"></q-img>
+      <q-card-section style="display: flex; justify-content: center; flex-direction: column"
+        class="text-center no-margin"
+      >
+        <q-img style="width: 80px; height: 100px; margin: 0 auto" src="/images/logo.png"></q-img>
+        <h6 style="margin: 20px 0" class="text-primary">Portal za sudije</h6>
+        <h5 style="margin: 10px 0; font-weight: bold;" class="text-primary" >Fudbalski savez Beograda</h5>
         <q-separator color="white"/>
       </q-card-section>
       <q-card-section>
@@ -36,9 +40,9 @@
             </template>
           </q-input>
           <div class="button-container">
-            <q-btn label='Uloguj se' type='submit' color='primary'/>
-            <q-btn label='Zaboravljena lozinka?' type='button' color='primary' flat class='q-ml-sm'
-                   @click='forgottenPassword'/>
+            <q-btn class="full-width" style="margin: 20px" label='Prijavi se' type='submit' color='primary'/>
+<!--            <q-btn label='Zaboravljena lozinka?' type='button' color='primary' flat class='q-ml-sm'-->
+<!--                   @click='forgottenPassword'/>-->
           </div>
         </q-form>
       </q-card-section>
@@ -93,11 +97,11 @@ function forgottenPassword(){
 <style scoped>
 .my-card {
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
 }
-.button-container{
-  display: flex;
-  justify-content: space-between;
-}
+/*.button-container{*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*}*/
 </style>

@@ -4,7 +4,7 @@
     <q-header>
         <q-toolbar>
           <q-toolbar-title>
-            <q-img src="/icons/favicon-128x128.png" height="30px" width="30px" style="cursor: pointer"></q-img>
+            <q-img height="30px" width="30px" src="/images/logo.png"></q-img>
           </q-toolbar-title>
         </q-toolbar>
     </q-header>
