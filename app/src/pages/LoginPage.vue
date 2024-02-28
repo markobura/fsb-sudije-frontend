@@ -16,7 +16,7 @@
         >
           <q-input
             filled
-            v-model.trim="loginForm.email"
+            v-model.trim="email"
             hint='Unesite Vaš e-mail'
             label="Email"
             lazy-rules
@@ -28,7 +28,7 @@
             hint='Unesite Vašu loziniku'
             color='black'
             :type="isPwd ? 'password' : 'text'"
-            v-model.trim="loginForm.password"
+            v-model.trim="password"
             :rules="passwordRules"
           >
             <template v-slot:append>
@@ -52,46 +52,43 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from 'vue';
+import { ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {useAuthenticatedUserStore} from "stores/authUserStore";
-import {Validator} from "quasar-easy-validate";
+import useRedirect from "src/composables/redirect";
 
 const router = useRouter();
 const userStore = useAuthenticatedUserStore();
 
-const loginForm = reactive({
-  email: '',
-  password: ''
-});
+// EMAIL INPUT START
+const email = ref('');
 
-const emailRules = [(email: string) => (new Validator(email)
-  .required('E-mail je obavezan')
-  .stringMin(3, 'E-mail može imati minimalno 3 karaktera')
-  .stringMax(255, 'E-mail može imati maksimalno 255 karaktera')
-  .email('Email nije validan')
-  .validate())
-];
+const emailRules = [(val:string) => (val != null && val.length > 0) || 'Molimo unesite email.', isValidEmail];
+
+function isValidEmail (val:string) {
+  const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
+  return emailPattern.test(val) || 'Molimo unesite email u ispravnom formatu.'
+}
+// EMAIL INPUT END
+// PASSWORD INPUT START
+const password = ref('');
 
 const isPwd = ref(true);
 
-const passwordRules = [(password: string) => (new Validator(password)
-  .required('Lozinka je obavezna')
-  .validate())
-]
-
+const passwordRules = [(val:string) => (val != null && val.length > 0) || 'Molimo unesite lozinku.']
+// PASSWORD INPUT END
+// ON SUBMIT START
 async function onSubmit(){
-  await userStore.login(loginForm);
-  await router.replace({
-    name: 'home'
-  })
+
+  let requestObject = {
+    username: email.value,
+    password: password.value
+  }
+
+   await userStore.login(requestObject);
+  useRedirect(router,'home','replace');
 }
 
-function forgottenPassword(){
-  router.push({
-    name: 'forgot-password'
-  })
-}
 </script>
 
 <style scoped>

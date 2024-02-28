@@ -19,26 +19,27 @@ const routes: RouteRecordRaw[] = [
         path: 'users',
         component: () => import('pages/UsersPage.vue'),
         name: 'users.index',
-        meta: {middleware: [auth, setupUsersPage]}
+        // meta: {middleware: [auth, setupUsersPage]}
       },
       {
-        path: 'users/:id',
-        component: () => import('pages/UserDetailsPage.vue'),
-        name: 'users.show',
-        meta: {middleware: [auth, setupUserDetailsPage]}
+        path: 'create-test',
+        component: () => import('pages/CreateTestPFIPage.vue'),
+        name: 'test.create',
+        // meta: {middleware: [auth, setupUsersPage]}
       },
       {
-        path: 'logs',
-        component: () => import('pages/LogsPage.vue'),
-        name: 'app.logs',
-        meta: {middleware: [auth, setupLogsPage]}
+        path: 'test-pfi',
+        component: () => import('pages/TestPFIPage.vue'),
+        name: 'test.pfi',
+        // meta: {middleware: [auth, setupUsersPage]}
       },
-      {
-        path: 'settings',
-        component: () => import('pages/SettingsPage.vue'),
-        name: 'settings.session-timeout',
-        meta: {middleware: [auth]}
-      },
+      // {
+      //   path: 'users/:id',
+      //   component: () => import('pages/UserDetailsPage.vue'),
+      //   name: 'users.show',
+      //   // meta: {middleware: [auth, setupUserDetailsPage]}
+      // },
+
     ],
   },
   {

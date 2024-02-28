@@ -1,17 +1,10 @@
 import {defineStore} from 'pinia';
 import {User} from "src/interfaces/user";
-import {
-  AutoLoginResponse,
-  ForgotPasswordResponse,
-  LoginRequest,
-  LoginResponse,
-  ResetPasswordRequest,
-  ResetPasswordResponse
-} from "src/interfaces/auth";
 import {HttpMethod, useFetch} from "src/composables/fetch";
-import useNotificationMessage, {NotificationType} from "src/composables/notificationMessage";
+import useNotificationMessage from "src/composables/notificationMessage";
 import {Cookies} from "quasar";
-import {useSettingsStore} from "stores/settingsStore";
+import {api} from "boot/axios";
+import {AutoLoginResponse} from "src/interfaces/auth";
 
 export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
   state: () => ({
@@ -23,26 +16,35 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
     getToken: (state) => state.token,
   },
   actions: {
-    async login(request: LoginRequest) {
-      const {
-        message,
-        data: {
-          user,
-          token,
-          sessionTimeout
-        }
-      } = await useFetch<LoginResponse, LoginRequest>({url: '/auth/login', method: HttpMethod.POST, data: request});
 
-      this.setUserData(user);
+    async login(request: {username: string, password: string}){
+      const formData = new FormData();
+      formData.append('username', request.username);
+      formData.append('password', request.password);
 
-      this.setUserToken(token);
+      await api
+        .post('/auth/token', formData)
+        .then((response)=>{
+          console.log(response)
+          this.setUserData(response.data.user);
+          this.token = response.data.access_token;
+          this.setUserCookie(response.data.access_token);
+          useNotificationMessage('success','Uspešan pristup sistemu!')
+        })
 
-      this.setUserSessionDurationData(sessionTimeout);
+    },
 
-      await this.setUserCookie(token);
-
-      useNotificationMessage(NotificationType.SUCCESS, message);
-
+    async changePassword(changePasswordRequest: {old_password: string, new_password: string}){
+      const formData = new FormData();
+      formData.append('old_password', changePasswordRequest.old_password);
+      formData.append('new_password', changePasswordRequest.new_password);
+      const url = `/user/change-password?old_password=${changePasswordRequest.old_password}&new_password=${changePasswordRequest.new_password}`
+      await api
+        .patch(url)
+        .then((response)=>{
+          console.log(response)
+          useNotificationMessage('success','Uspešno promenjena lozinka!')
+        })
     },
 
     async logout() {
@@ -51,58 +53,29 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
     },
 
 
-    async forgotPassword(email: string) {
-      const {message} = await useFetch<ForgotPasswordResponse, { email: string }>({
-        url: '/auth/forgot-password',
-        method: HttpMethod.POST,
-        data: {email}
-      });
-      useNotificationMessage(NotificationType.SUCCESS, message)
 
-    },
-
-    async activateAccount(request: ResetPasswordRequest) {
-      const {message} = await useFetch<ResetPasswordResponse, ResetPasswordRequest>({
-        url: '/auth/activate-account',
-        method: HttpMethod
-          .POST,
-        data: request
-      });
-      useNotificationMessage(NotificationType.SUCCESS, message);
-    },
-
-    async resetPassword(request: ResetPasswordRequest) {
-      const {message} = await useFetch<ResetPasswordResponse, ResetPasswordRequest>({
-        url: '/auth/reset-password',
-        method: HttpMethod
-          .POST,
-        data: request
-      });
-      useNotificationMessage(NotificationType.SUCCESS, message);
-    },
-
-    async autoLogin() {
-      const {
-        data: {
-          user,
-          isUserSessionActive,
-          sessionTimeout
-        }
-      } = await useFetch<AutoLoginResponse>({url: '/auth/auto-login', method: HttpMethod.POST})
-
-      if (isUserSessionActive) {
-        const userSessionToken: string = Cookies.get('userSessionToken');
-        this.setUserData(user);
-        this.setUserToken(userSessionToken)
-        this.setUserSessionDurationData(sessionTimeout);
-
-      }else{
-        Cookies.remove('userSessionToken', {
-          path: '/'
-        });
-      }
-      return isUserSessionActive;
-    },
+    // async autoLogin() {
+    //   const {
+    //     data: {
+    //       user,
+    //       isUserSessionActive,
+    //       sessionTimeout
+    //     }
+    //   } = await useFetch<AutoLoginResponse>({url: '/auth/auto-login', method: HttpMethod.POST})
+    //
+    //   if (isUserSessionActive) {
+    //     const userSessionToken: string = Cookies.get('userSessionToken');
+    //     this.setUserData(user);
+    //     this.setUserToken(userSessionToken)
+    //     this.setUserSessionDurationData(sessionTimeout);
+    //
+    //   }else{
+    //     Cookies.remove('userSessionToken', {
+    //       path: '/'
+    //     });
+    //   }
+    //   return isUserSessionActive;
+    // },
 
     setUserData(user: User) {
       this.user = user;
@@ -110,10 +83,6 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
 
     setUserToken(token: string) {
       this.token = token;
-    },
-
-    setUserSessionDurationData(sessionDuration: number) {
-      useSettingsStore().setSessionTimeout(sessionDuration);
     },
 
     async setUserCookie(userSessionToken: string) {

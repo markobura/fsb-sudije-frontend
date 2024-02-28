@@ -1,23 +1,26 @@
-import {QTableProps} from "quasar";
+export default function useUserTableColumns(){
 
-export default function useUserTableColumns(): QTableProps['columns'] {
   return [
     {
-      name: 'user',
+      name: 'name',
       label: 'Korisnik',
       align: 'left',
-      field: (row: any) => `${row.name} ${row.surname}`,
+      field: (row: any) => `${row.first_name} ${row.last_name}`,
+      required: true,
       sortable: true
     },
-    {name: 'email', align: 'left', label: 'E-mail', field: 'email', sortable: true},
+    {name: 'email', align: 'left', label: 'E-mail', field: 'email',  required: true,sortable: true},
+    {name: 'league', align: 'left', label: 'Liga', field: 'league',  required: true,sortable: true},
+    {name: 'referee_type', align: 'left', label: 'Lista', field: 'referee_type', required: true, sortable: true},
     {
-      name: 'accountState',
+      name: 'active',
       label: 'Status naloga',
-      field: 'is_active',
-      sortable: true,
-      format: (val: boolean) => val ? 'AKTIVAN' : 'NEAKTIVAN',
-      align: 'center'
+      field: 'active',
+      sortable: true, required: true,
+      align: 'left'
     },
-    {name: 'details', label: 'Kartica korisnika', field: 'details', align: 'center'}
-  ]
+    {name: 'details', label: 'Detalji korisnika', field: 'details',  required: true,align: 'center'},
+    {name: 'password', label: 'Promena lozinke', field: 'password',  required: true,align: 'center'},
+    {name: 'delete', label: 'Obriši korisnika', field: 'delete',  required: true,align: 'center'}
+  ];
 }

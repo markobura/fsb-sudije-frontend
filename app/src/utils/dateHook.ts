@@ -1,16 +1,16 @@
 import {date} from 'quasar'
 
  export function useDBFormat( date: string){
-    const dateArr = date.split('/');
+    const dateArr = date.split('.');
     return dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0];
  }
  export  function useUIFormat( date: string){
     const dateArr = date.split('-');
-    return dateArr[2] + '/' + dateArr[1] + '/' + dateArr[0];
+    return dateArr[2] + '.' + dateArr[1] + '.' + dateArr[0];
   }
  export function useCurrentDate(){
    const today = Date.now()
-   return date.formatDate(today, 'DD/MM/YYYY');
+   return date.formatDate(today, 'DD.MM.YYYY');
  }
 
  export function extractTimeFromTimestamp(timestamp: string): string{

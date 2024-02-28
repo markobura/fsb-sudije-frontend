@@ -5,29 +5,16 @@
         <BaseHeader icon="group" title="Pregled korisnika"></BaseHeader>
       </q-card-section>
       <q-separator inset/>
-      <q-card-section class="row">
-        <q-select
-          class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12"
-          filled
-          color="primary"
-          label="Status naloga"
-          v-model="accountState"
-          :options="accountStateOptions"
-          option-value="id"
-          option-label="name"
-          @update:model-value="fetchUsers"
-        />
-      </q-card-section>
       <q-card-section>
         <q-table :rows="users" :columns="columns" row-key="name" :filter="filterTable">
           <template v-slot:top-left>
             <q-btn
               round
-              color="primary"
+              color="green-7"
               icon="person_add"
-              @click="toggleUserCreationDialog"
+              @click="toggleUserCreationDialog('create')"
             >
-              <BaseTooltip
+              <BaseTooltip class="bg-green-7"
                 tooltip="Dodaj novog korisnika"
               />
 
@@ -57,22 +44,71 @@
               </q-th>
             </q-tr>
           </template>
-          <template v-slot:body-cell-details="props">
-            <q-td :props="props">
-              <q-btn
-                type="button"
-                flat
-                @click="showUserDetails(props.row.id)"
-              >
-                <q-icon
-                  name="manage_search"
-                  color="primary"
-                />
-                <BaseTooltip
-                tooltip="Detalji korisnika"
-                />
-              </q-btn>
-            </q-td>
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="name" :props="props">
+                <span>{{props.row.first_name + ' ' + props.row.last_name}}</span>
+              </q-td>
+              <q-td key="email" :props="props">
+                <span>{{props.row.email}}</span>
+              </q-td>
+              <q-td key="league" :props="props">
+                <span>{{props.row.league}}</span>
+              </q-td>
+              <q-td key="referee_type" :props="props">
+                <span>{{props.row.referee_type}}</span>
+              </q-td>
+              <q-td key="active" :props="props">
+                <q-badge outline :color="props.row.active ? 'green-9' : 'red'"
+                         :label="props.row.active ? 'AKTIVAN' : 'NEAKTIVAN'"/>
+              </q-td>
+              <q-td key="details" :props="props"  class="text-center">
+                <q-btn
+                  type="button"
+                  flat
+                  @click="toggleUserCreationDialog('update', props.row)"
+                >
+                  <q-icon
+                    name="manage_search"
+                    color="teal-9"
+                  />
+                  <BaseTooltip class="bg-teal-9"
+                               tooltip="Detalji korisnika"
+                  />
+                </q-btn>
+              </q-td>
+              <q-td key="password" :props="props"  class="text-center">
+                <q-btn
+                  type="button"
+                  flat
+                  @click="changePassword(props.row)"
+                >
+                  <q-icon
+                    name="lock"
+                    color="orange-8"
+                  />
+                  <BaseTooltip class="bg-orange-8"
+                               tooltip="Promena lozinke"
+                  />
+                </q-btn>
+              </q-td>
+              <q-td key="delete" :props="props"  class="text-center">
+                <q-btn
+                  round
+                  type="button"
+                  flat
+                  @click="deleteUser(props.row._id)"
+                >
+                  <q-icon
+                    name="delete"
+                    color="red"
+                  />
+                  <BaseTooltip class="bg-red"
+                               tooltip="Obriši korisnika"
+                  />
+                </q-btn>
+              </q-td>
+            </q-tr>
           </template>
         </q-table>
       </q-card-section>
@@ -80,7 +116,14 @@
     <UserCreateDialog
       v-model="isCreateUserDialogVisible"
       v-if="isCreateUserDialogVisible"
+      :mode="userCreationDialogMode"
+      :user="userUpdate"
     ></UserCreateDialog>
+    <ChangePasswordAdminDialog
+      v-model="changePasswordDialogIsVisible"
+      v-if="changePasswordDialogIsVisible"
+      :user="userUpdate"
+    />
   </q-page>
 </template>
 
@@ -89,11 +132,15 @@ import {computed, ref} from "vue";
 import {useUserStore} from "stores/userStore";
 import {useRouter} from "vue-router";
 import BaseHeader from "components/BaseHeader.vue";
-import {AccountState} from "src/interfaces/user";
 import useUserTableColumns from "src/columns/userTableColumns";
 import BaseTooltip from "components/BaseTooltip.vue";
 import { defineAsyncComponent } from 'vue'
+import ChangePasswordAdminDialog from "components/ChangePasswordAdminDialog.vue";
+import {User} from "src/interfaces/user";
+import {useQuasar} from "quasar";
 const UserCreateDialog = defineAsyncComponent(() => import('components/UserCreateDialog.vue'))
+
+const $q = useQuasar();
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -106,21 +153,26 @@ const filterTable = ref('');
 
 const columns = useUserTableColumns()
 
-const accountStateOptions = [
-  {id: AccountState.ALL, name: 'SVI'},
-  {id: AccountState.ACTIVE, name: 'AKTIVAN'},
-  {id: AccountState.INACTIVE, name: 'NEAKTIVAN'},
-];
-const accountState = ref(accountStateOptions[0]);
 
 const fetchUsers = async () => {
-  await userStore.getUserList(accountState.value.id);
+  await userStore.getUserList();
 }
+fetchUsers();
 
 const isCreateUserDialogVisible = ref(false);
-
-function toggleUserCreationDialog() {
+const userCreationDialogMode = ref('create');
+const userUpdate = ref()
+function toggleUserCreationDialog(mode: 'create'|'update', user?: User) {
   isCreateUserDialogVisible.value = !isCreateUserDialogVisible.value;
+  userCreationDialogMode.value = mode
+  userUpdate.value = user
+}
+
+const changePasswordDialogIsVisible = ref(false);
+
+function changePassword(user: User){
+  changePasswordDialogIsVisible.value = true;
+  userUpdate.value = user
 }
 
 function showUserDetails(id: number) {
@@ -129,5 +181,21 @@ function showUserDetails(id: number) {
     params: {id}
   });
 }
+
+function deleteUser(id: number){
+  $q.dialog({
+    title: 'Brisanje korisnika',
+    message: 'Ukoliko obrišete ovog korisnika, on će trajno biti izbrisan iz sistema.',
+    persistent: true,
+    ok: {
+      push: true,
+      color: 'negative'
+    },
+    cancel: true
+  }).onOk(async () => {
+    await userStore.deleteUser(id);
+  })
+}
+
 
 </script>

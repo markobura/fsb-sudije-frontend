@@ -1,12 +1,14 @@
 export interface User {
-  id: number,
-  name: string,
-  surname: string,
+  _id: string,
+  first_name: string,
+  last_name: string,
   email: string,
-  is_active: boolean,
-  is_admin: boolean,
-  created_at: string,
-  updated_at: string,
+  phone_number: string,
+  date_of_birth: string,
+  role: string,
+  league: string,
+  referee_type: string,
+  active: boolean
 }
 
 export interface UsersResponse {
