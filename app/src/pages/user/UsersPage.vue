@@ -97,7 +97,7 @@
                   round
                   type="button"
                   flat
-                  @click="deleteUser(props.row._id)"
+                  @click="deleteUser(props.row.id)"
                 >
                   <q-icon
                     name="delete"
@@ -175,14 +175,14 @@ function changePassword(user: User){
   userUpdate.value = user
 }
 
-function showUserDetails(id: number) {
-  router.push({
-    name: 'users.show',
-    params: {id}
-  });
-}
+// function showUserDetails(id: number) {
+//   router.push({
+//     name: 'users.show',
+//     params: {id}
+//   });
+// }
 
-function deleteUser(id: number){
+function deleteUser(id: string){
   $q.dialog({
     title: 'Brisanje korisnika',
     message: 'Ukoliko obrišete ovog korisnika, on će trajno biti izbrisan iz sistema.',

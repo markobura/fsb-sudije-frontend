@@ -104,6 +104,7 @@ import BaseHeader from "components/BaseHeader.vue";
 import {Validator} from "quasar-easy-validate";
 import {useDBFormat, useUIFormat} from "src/utils/dateHook";
 import {User} from "src/interfaces/user";
+import {useAuthenticatedUserStore} from "stores/authUserStore";
 
 const props = defineProps<{
   mode: 'create'|'update'|'user',
@@ -134,7 +135,7 @@ const role = ref(roleOptions[0]);
 const leagueOptions = ['MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
 const league = ref(leagueOptions[0]);
 
-const refereeTypeOptions = ['SUDIJA', 'POMOĆNI SUDIJA'];
+const refereeTypeOptions = ['SUDIJA', 'POMOĆNI SUDIJA','DELEGAT'];
 const refereeType = ref(refereeTypeOptions[0]);
 
 const nameRules = [(name: string) => new Validator(name)
@@ -201,11 +202,14 @@ async function storeUser(){
       league: league.value,
       referee_type: refereeType.value,
       active:  props.user.active,
-      _id: props.user._id
+      id: props.user.id
     }
     await userStore.updateUser(request);
   }
   if(props.mode === 'user'){
+    console.log('cao')
+    console.log(props.user.id)
+
     const request = {
       first_name: name.value,
       last_name: surname.value,
@@ -216,9 +220,13 @@ async function storeUser(){
       league: league.value,
       referee_type: refereeType.value,
       active:  props.user.active,
-      _id: props.user._id
+      id: props.user.id
     }
     await userStore.updateUser(request);
+
+    useAuthenticatedUserStore().user = request
+
+
   }
 
   name.value = ''

@@ -13,19 +13,21 @@ export default function auth ({ next }) {
       name: 'login'
     })
   }
-  // const attemptAutoLogin = async () => {
-  //   const shouldAutoLogin = await useAttemptAutoLogin();
-  //   if(shouldAutoLogin){
-  //     return next();
-  //   }else{
-  //     return next({name: 'login'})
-  //   }
-  // };
-  // if (userSessionTokenExists && Object.keys(userStore.user).length === 0) {
-  //   attemptAutoLogin();
-  // }else{
-  //   return next();
-  // }
+
+  console.log(userSessionTokenExists)
+  const attemptAutoLogin = async () => {
+    const shouldAutoLogin = await useAttemptAutoLogin();
+    if(shouldAutoLogin){
+      return next();
+    }else{
+      return next({name: 'login'})
+    }
+  };
+  if (userSessionTokenExists && Object.keys(userStore.user).length === 0) {
+    attemptAutoLogin();
+  }else{
+    return next();
+  }
 
   return next();
 

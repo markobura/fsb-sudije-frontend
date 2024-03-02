@@ -50,9 +50,9 @@
             <q-item
               clickable
               v-ripple
-              :active="link === 'create-test'"
-              :to="{name: 'test.create'}"
-              @click="link = 'create-test'"
+              :active="link === 'tests-overview'"
+              :to="{name: 'tests.overview'}"
+              @click="link = 'tests-overview'"
               active-class="my-menu-link"
             >
               <q-item-section avatar>

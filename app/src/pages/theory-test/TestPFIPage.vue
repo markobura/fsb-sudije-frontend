@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import BaseHeader from 'src/components/BaseHeader.vue'
+import BaseHeader from 'components/BaseHeader.vue'
 import {reactive} from "vue";
 import useNotificationMessage from "src/composables/notificationMessage";
 import {useQuasar} from "quasar";

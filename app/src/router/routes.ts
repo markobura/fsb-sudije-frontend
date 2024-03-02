@@ -17,21 +17,33 @@ const routes: RouteRecordRaw[] = [
       {path: '', component: () => import('pages/IndexPage.vue'), name: 'home'},
       {
         path: 'users',
-        component: () => import('pages/UsersPage.vue'),
+        component: () => import('pages/user/UsersPage.vue'),
         name: 'users.index',
-        // meta: {middleware: [auth, setupUsersPage]}
+        meta: {middleware: [auth]}
       },
       {
         path: 'create-test',
-        component: () => import('pages/CreateTestPFIPage.vue'),
+        component: () => import('pages/theory-test/CreateTestPFIPage.vue'),
         name: 'test.create',
-        // meta: {middleware: [auth, setupUsersPage]}
+        meta: {middleware: [auth]}
+      },
+      {
+        path: 'tests-overview',
+        component: () => import('pages/theory-test/TheoryTestsOverviewPage.vue'),
+        name: 'tests.overview',
+        meta: {middleware: [auth]}
+      },
+      {
+        path: 'test-details/:id',
+        component: () => import('pages/theory-test/CreateTestPFIPage.vue'),
+        name: 'test.details',
+        meta: {middleware: [auth]}
       },
       {
         path: 'test-pfi',
-        component: () => import('pages/TestPFIPage.vue'),
+        component: () => import('pages/theory-test/TestPFIPage.vue'),
         name: 'test.pfi',
-        // meta: {middleware: [auth, setupUsersPage]}
+        meta: {middleware: [auth]}
       },
       // {
       //   path: 'users/:id',
@@ -50,14 +62,7 @@ const routes: RouteRecordRaw[] = [
     },
     redirect: {name: 'login'},
     children: [
-      {path: 'login', component: () => import('pages/LoginPage.vue'), name: 'login'},
-      {path: 'forgot-password', component: () => import('pages/ForgotPasswordPage.vue'), name: 'forgot-password'},
-      {path: 'reset-password/:token/', component: () => import('pages/ResetPasswordPage.vue'), name: 'reset-password'},
-      {
-        path: 'activate-account/:token/',
-        component: () => import('pages/ActivateAccountPage.vue'),
-        name: 'activate-account'
-      },
+      {path: 'login', component: () => import('pages/auth/LoginPage.vue'), name: 'login'},
     ],
   },
   // Always leave this as last one,

@@ -28,7 +28,7 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
           console.log(response)
           this.setUserData(response.data.user);
           this.token = response.data.access_token;
-          this.setUserCookie(response.data.access_token);
+          this.setUserCookie(response.data.access_token, response.data.user.email);
           useNotificationMessage('success','Uspešan pristup sistemu!')
         })
 
@@ -48,34 +48,34 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
     },
 
     async logout() {
-      await useFetch({url: '/auth/logout', method: HttpMethod.POST});
       await this.revokeSession();
     },
 
 
 
-    // async autoLogin() {
-    //   const {
-    //     data: {
-    //       user,
-    //       isUserSessionActive,
-    //       sessionTimeout
-    //     }
-    //   } = await useFetch<AutoLoginResponse>({url: '/auth/auto-login', method: HttpMethod.POST})
-    //
-    //   if (isUserSessionActive) {
-    //     const userSessionToken: string = Cookies.get('userSessionToken');
-    //     this.setUserData(user);
-    //     this.setUserToken(userSessionToken)
-    //     this.setUserSessionDurationData(sessionTimeout);
-    //
-    //   }else{
-    //     Cookies.remove('userSessionToken', {
-    //       path: '/'
-    //     });
-    //   }
-    //   return isUserSessionActive;
-    // },
+    async autoLogin() {
+      let redirectToRoute = '';
+
+      const email = Cookies.get('email');
+      console.log(email)
+      await api
+        .get('/user/me', )
+        .then((response) => {
+          console.log(response)
+          const userSessionFound = response.data;
+
+          if (userSessionFound) {
+            this.user = response.data
+            redirectToRoute = '/';
+          } else {
+            Cookies.remove('userSessionToken', {
+              path: '/'
+            });
+            redirectToRoute = 'login';
+          }
+        })
+      return redirectToRoute;
+    },
 
     setUserData(user: User) {
       this.user = user;
@@ -85,8 +85,11 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       this.token = token;
     },
 
-    async setUserCookie(userSessionToken: string) {
+    async setUserCookie(userSessionToken: string, email: string) {
       Cookies.set('userSessionToken', userSessionToken, {
+        path: '/',
+      });
+      Cookies.set('email', email, {
         path: '/',
       });
     },
