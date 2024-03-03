@@ -54,7 +54,7 @@ const passwordInputType = computed(function (){
 async function onSubmit(){
 
   let resetPasswordRequest = {
-    _id: props.user._id,
+    user_id: props.user.id,
     new_password: password.value,
   }
 

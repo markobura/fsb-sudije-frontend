@@ -1,12 +1,11 @@
 <template>
-  <q-page padding>
+  <q-page v-if="activeTestExist" padding>
     <q-card>
       <q-card-section>
         <BaseHeader icon="quiz" title="TEST PRAVILA FUDBALSKE IGRE"></BaseHeader>
       </q-card-section>
       <q-separator inset/>
       <q-card-section>
-
 
           <q-card-section  class="bg-blue-grey-1 q-pa-md"
                            style="border-radius: 20px; margin-bottom: 10px"
@@ -16,85 +15,18 @@
               <span class="text-h6 text-primary" style="margin-bottom: 122px">{{index+1 + '. Pitanje'}}</span>
               <q-item>
                 <span style="margin: 10px 0; width: 100%; font-size: 16px;" class="text-bold">
-                {{question.question}}
+                {{question.question_text}}
               </span>
               </q-item>
-
-
-              <q-item dense>
+              <q-item v-for="(answers,index2) in question.answers" :key="answers" dense style="margin-bottom: 10px">
                 <q-item-section>
-                  <q-input
-                    readonly
-                    dense
-                    style="width: 100%"
-                    filled
-                    v-model="question.answer1.text"
-                    label="Ponuđeni odgovor 1"
-                    lazy-rules
-                    :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-                    type="text"
-                  />
+                  <span>
+                  <strong class="text-primary">{{getAnswerOrder(index2)}}</strong>  {{answers.answer_text}}
+                  </span>
                 </q-item-section>
                 <q-item-section side >
-                  <q-toggle color="green" v-model="question.answer1.isCorrect"
-                            @update:model-value="updateAnswers(index,1)"/>
-                </q-item-section>
-              </q-item>
-              <q-item dense>
-                <q-item-section>
-                  <q-input
-                    readonly
-                    dense
-                    style="width: 100%"
-                    filled
-                    v-model="question.answer2.text"
-                    label="Ponuđeni odgovor 2"
-                    lazy-rules
-                    :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-                    type="text"
-                  />
-                </q-item-section>
-                <q-item-section side >
-                  <q-toggle color="green" v-model="question.answer2.isCorrect"
-                            @update:model-value="updateAnswers(index,2)"/>
-                </q-item-section>
-              </q-item>
-              <q-item dense>
-                <q-item-section>
-                  <q-input
-                    dense
-                    style="width: 100%"
-                    filled
-                    readonly
-                    v-model="question.answer3.text"
-                    label="Ponuđeni odgovor 3"
-                    lazy-rules
-                    :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-                    type="text"
-                  />
-                </q-item-section>
-                <q-item-section side >
-                  <q-toggle color="green" v-model="question.answer3.isCorrect"
-                            @update:model-value="updateAnswers(index,3)"/>
-                </q-item-section>
-              </q-item>
-              <q-item dense>
-                <q-item-section>
-                  <q-input
-                    dense
-                    style="width: 100%"
-                    filled
-                    v-model="question.answer4.text"
-                    label="Ponuđeni odgovor 4"
-                    readonly
-                    lazy-rules
-                    :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-                    type="text"
-                  />
-                </q-item-section>
-                <q-item-section side >
-                  <q-toggle color="green" v-model="question.answer4.isCorrect"
-                            @update:model-value="updateAnswers(index,4)"/>
+                  <q-toggle color="green" v-model="answers.is_correct"
+                            @update:model-value="updateAnswers(index,index2)"/>
                 </q-item-section>
               </q-item>
             </div>
@@ -108,111 +40,111 @@
     </q-card>
 
   </q-page>
-<!--  <q-page class="row items-center justify-evenly">-->
-<!--    <span class="text-h6 text-red">-->
-<!--      Trenutno ne postoji aktivan test PFI! -->
-<!--    </span>-->
-<!--  </q-page>-->
+  <q-page v-else class="row items-center justify-evenly">
+
+    <q-card style="display: flex; height: 200px; max-width: 330px; background-color: #D3D3D3" class="no-padding">
+    <q-card-section style="align-self: center" >
+        <q-icon name="warning" color="primary" size="50px"></q-icon>
+      </q-card-section>
+      <q-card-section style="align-self: center; display: flex; flex-direction: column">
+        <q-card-section class="text-center text-bold" style="font-size: 16px">
+          Trenutno ne postoji aktivan test!
+          Pokušajte ponovo kasnije.
+        </q-card-section>
+        <q-card-actions style="align-self: center;">
+          <q-btn @click="reloadPage" rounded label="Pokušaj ponovo" color="primary"></q-btn>
+        </q-card-actions>
+      </q-card-section>
+    </q-card>
+
+
+  </q-page>
 </template>
 
 <script setup lang="ts">
 import BaseHeader from 'components/BaseHeader.vue'
-import {reactive} from "vue";
+import {computed, ref} from "vue";
 import useNotificationMessage from "src/composables/notificationMessage";
 import {useQuasar} from "quasar";
+import {useTheoryAndVideoTestStore} from "stores/theoryAndVideoTestStore";
+import {useRouter} from "vue-router";
 
 const $q = useQuasar();
-const questions = reactive([
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i' +
-      ' van terena za igru. Lopta je u igri. Odluka sudije? Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije ' +
-      'i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
+const router = useRouter();
 
+const theoryTestStore = useTheoryAndVideoTestStore();
+
+const activeTestExist = computed(()=>{
+  return theoryTestStore.activeTestExist;
+})
+
+async function getActiveTest(){
+  await theoryTestStore.getActiveTestApi();
+  questions.value = theoryTestStore.getActiveTest.theory_questions;
+  console.log(questions.value)
+}
+getActiveTest();
+
+let questions = ref([
   {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
-  },
-  {
-    question: 'Vratar koristeći prekomernu snagu, udari protivnika koji se nalazi unutar vrata, ali iza poprečne linije i van terena za igru. Lopta je u igri. Odluka sudije?',
-    answer1: {text: 'CK vrataru i KU', isCorrect: false},
-    answer2: {text: 'CK vrataru i spuštanje lopte', isCorrect: false},
-    answer3: {text: 'CK vrataru i ISU sa poprečne linije kaznenog prostora', isCorrect: false},
-    answer4: {text: 'CK vrataru i DSU sa poprečne linije kaznenog prostora', isCorrect: false}
+    question_text: '',
+    answers: [
+      {answer_text: '',is_correct: false},
+      {answer_text: '',is_correct: false},
+      {answer_text: '',is_correct: false},
+      {answer_text: '',is_correct: false}
+    ],
   },
 ])
 
-function updateAnswers(index: number, correctAnswer: number){
+function updateAnswers(index: number,correctAnswer: number){
   switch (correctAnswer){
+    case 0 :
+      questions.value[index].answers[1].is_correct = false;
+      questions.value[index].answers[2].is_correct = false;
+      questions.value[index].answers[3].is_correct= false;
+      break;
     case 1 :
-      questions[index].answer2.isCorrect = false;
-      questions[index].answer3.isCorrect = false;
-      questions[index].answer4.isCorrect = false;
+      questions.value[index].answers[0].is_correct = false;
+      questions.value[index].answers[2].is_correct = false;
+      questions.value[index].answers[3].is_correct = false;
       break;
     case 2 :
-      questions[index].answer1.isCorrect = false;
-      questions[index].answer3.isCorrect = false;
-      questions[index].answer4.isCorrect = false;
+      questions.value[index].answers[0].is_correct = false;
+      questions.value[index].answers[1].is_correct = false;
+      questions.value[index].answers[3].is_correct = false;
       break;
     case 3 :
-      questions[index].answer1.isCorrect = false;
-      questions[index].answer2.isCorrect = false;
-      questions[index].answer4.isCorrect = false;
-      break;
-    case 4 :
-      questions[index].answer1.isCorrect = false;
-      questions[index].answer2.isCorrect = false;
-      questions[index].answer3.isCorrect = false;
+      questions.value[index].answers[0].is_correct = false;
+      questions.value[index].answers[1].is_correct = false;
+      questions.value[index].answers[2].is_correct = false;
       break;
   }
 }
-
 async function submit(){
   if(!validationSuccessful()){
     return;
   }
-  submitTest();
+
+  let testAnswers : { answer: string }[] = [];
+
+  questions.value.forEach(question => {
+    const index = question.answers.findIndex(answer => answer.is_correct);
+    if(index !== -1){
+      testAnswers.push({answer: question.answers[index].answer_text})
+    }
+  })
+
+  console.log(testAnswers)
+
+  submitTest(testAnswers);
 }
 
 function validationSuccessful(){
 
-  const index = questions.findIndex(el => !el.answer1.isCorrect && !el.answer2.isCorrect
-    && !el.answer3.isCorrect && !el.answer4.isCorrect);
+  const index = questions.value.findIndex(el => {
+    return el.answers.every(answer => !answer.is_correct);
+  });
 
   if(index !== -1){
     useNotificationMessage('error','Za pitanje broj ' + Number(Number(index)+1) + ' nije obeležen odgovor!');
@@ -223,7 +155,7 @@ function validationSuccessful(){
 }
 
 
-function submitTest(){
+function submitTest(testAnswers: { answer: string }[]){
   $q.dialog({
     title: 'Slanje testa',
     message: 'Ukoliko pošaljete test više nećete biti u mogućnosti da promenite odgovore.',
@@ -234,8 +166,34 @@ function submitTest(){
     },
     cancel: true
   }).onOk(async () => {
-    console.log('cao');
+    await theoryTestStore.submitTest(testAnswers);
+    router.push({
+      name: 'home'
+    })
   })
+}
+
+function reloadPage(){
+  location.reload();
+}
+
+function getAnswerOrder(index: number){
+  switch (index){
+    case  0 :
+      return 'a) '
+    case  1 :
+      return 'b) '
+    case  2 :
+      return 'c) '
+    case  3 :
+      return 'd) '
+    case  4 :
+      return 'e) '
+    case  5 :
+      return 'f) '
+    case  6 :
+      return 'g) '
+  }
 }
 </script>
 
