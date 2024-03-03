@@ -13,7 +13,7 @@
           v-if="useAuthenticatedUserStore().getUser.role !== 'FSB ADMIN'"
           style=" margin: 10px"
           flat
-          label="Izloguj se"
+          label="Odjavi se"
           icon="logout"
           @click="logout"
         />

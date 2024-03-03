@@ -163,7 +163,7 @@ async function showTest(){
   if(test){
     date.value = useUIFormat(test.start_date.substring(0,10))
     startTime.value = test.start_date.substring(11,16)
-    endTime.value = test.end_data.substring(11,16)
+    endTime.value = test.end_date.substring(11,16)
     league.value = test.league
     refereeType.value = test.role
     questions.value = test.theory_questions
@@ -222,7 +222,7 @@ async function submit(){
   const request = {
     name: 'Test: ' + date.value + ' ' + startTime.value,
     start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279Z',
-    end_data: useDBFormat(date.value)+'T'+endTime.value + ':00.279Z',
+    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279Z',
     league: [...league.value],
     role: [...refereeType.value],
     theory_questions: [...questions.value]

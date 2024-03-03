@@ -1,10 +1,8 @@
 import {defineStore} from 'pinia';
 import {User} from "src/interfaces/user";
-import {HttpMethod, useFetch} from "src/composables/fetch";
 import useNotificationMessage from "src/composables/notificationMessage";
 import {Cookies} from "quasar";
 import {api} from "boot/axios";
-import {AutoLoginResponse} from "src/interfaces/auth";
 
 export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
   state: () => ({
