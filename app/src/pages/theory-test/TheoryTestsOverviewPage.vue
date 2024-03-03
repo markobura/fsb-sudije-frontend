@@ -57,6 +57,19 @@
                   <BaseTooltip class="bg-amber-9" tooltip="Detalji testa"/>
                 </q-btn>
               </q-td>
+              <q-td key="results" :props="props"  class="text-center">
+                <q-btn
+                  type="button"
+                  flat
+                  @click="downloadResultsExcel(props.row.id)"
+                >
+                  <q-icon
+                    name="query_stats"
+                    color="green"
+                  />
+                  <BaseTooltip class="bg-green" tooltip="Preuzmi excel sa rezultatima testa"/>
+                </q-btn>
+              </q-td>
               <q-td key="delete" :props="props"  class="text-center">
                 <q-btn
                   round
@@ -134,6 +147,11 @@ function showTestDetailsPage(id: string){
     name: 'test.details',
     params: {id}
   });
+}
+
+function downloadResultsExcel(id: string){
+
+console.log('excel download: '+id);
 }
 
 </script>

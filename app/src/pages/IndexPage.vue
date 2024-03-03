@@ -3,7 +3,7 @@
     <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap; width: 100%">
       <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni test PFI"
              icon="quiz" rounded @click="openTestPFIPage"/>
-      <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni video test" icon="movie" rounded />
+      <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni video test" icon="play_circle" rounded />
     </div>
     <div>
       <q-card style="min-width: 350px" class="bg-blue-grey-1">

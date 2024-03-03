@@ -1,22 +1,32 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class='header bg-primary'
-              style="display: flex; justify-content: space-between;">
+    <q-header elevated class='header bg-primary'>
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer"/>
-
+        <q-btn  v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'"
+          dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <q-avatar>
             <img style="cursor:pointer" src="/images/logo.png"  @click="backToHome">
           </q-avatar>
         </q-toolbar-title>
-
+        <q-btn
+          v-if="useAuthenticatedUserStore().getUser.role !== 'FSB ADMIN'"
+          style=" margin: 10px"
+          flat
+          label="Izloguj se"
+          icon="logout"
+          @click="logout"
+        />
       </q-toolbar>
+
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+    <q-drawer
+      v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'"
+      show-if-above v-model="leftDrawerOpen" side="left" bordered >
 
-          <q-list bordered class="rounded-borders text-primary">
+          <q-list
+            bordered class="rounded-borders text-primary">
             <q-item
               clickable
               v-ripple
@@ -72,7 +82,7 @@
               active-class="my-menu-link"
             >
               <q-item-section avatar>
-                <q-icon name="movie"/>
+                <q-icon name="play_circle"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label> Video test </q-item-label>
