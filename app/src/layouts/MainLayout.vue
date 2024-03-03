@@ -111,7 +111,7 @@
               rounded
               class="absolute-bottom"
               color="red"
-              label="Izloguj se"
+              label="Odjavi se"
               icon="logout"
               @click="logout"
             />

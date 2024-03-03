@@ -149,9 +149,12 @@ function showTestDetailsPage(id: string){
   });
 }
 
-function downloadResultsExcel(id: string){
+async function downloadResultsExcel(id: string){
 
 console.log('excel download: '+id);
+
+await theoryTestStore.downloadExcel(id);
+
 }
 
 </script>

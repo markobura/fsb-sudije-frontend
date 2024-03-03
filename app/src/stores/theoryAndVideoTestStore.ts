@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import useNotificationMessage from "src/composables/notificationMessage";
 import {api} from "boot/axios";
+import useDownloadExcel from "src/composables/downloadExcelApi";
 
 export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore', {
   state: () => ({
@@ -105,6 +106,21 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         }
       }
 
+    },
+
+    async downloadExcel(id: string){
+
+      try {
+        // const response = await api.get('/theory-test/export-results/'+id);
+        // useNotificationMessage('success', response.data.message)
+        const url ='/theory-test/export-results/'+id;
+        await useDownloadExcel(url, {}, 'rezultati');
+
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          useNotificationMessage('error',error.response.data.detail)
+        }
+      }
     }
   }
 })
