@@ -19,7 +19,9 @@
             <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="image">
               <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>
             </q-btn>
-
+            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">
+              <BaseTooltip class="bg-teal-9" tooltip="Dostupnost"/>
+            </q-btn>
           </div>
         </q-card-section>
         <q-separator inset/>
@@ -45,7 +47,7 @@
       :mode="'user'"
       :user="user"
     ></UserCreateDialog>
-
+    <AvailabilityDialog v-model="availabilityDialogIsVisible" v-if="availabilityDialogIsVisible"/>
   </q-page>
 </template>
 
@@ -57,6 +59,7 @@ import ChangePasswordDialog from 'src/components/ChangePasswordDialog.vue'
 import UserCreateDialog from 'src/components/UserCreateDialog.vue'
 import BaseTooltip from 'src/components/BaseTooltip.vue'
 import {useRouter} from "vue-router";
+import AvailabilityDialog from "components/AvailabilityDialog.vue";
 
 const authUserStore = useAuthenticatedUserStore();
 const router = useRouter();
@@ -69,8 +72,13 @@ const user = computed(()=>{
 const changeDialogIsVisible = ref(false);
 
 function openChangePasswordDialog(){
-  console.log('cao')
   changeDialogIsVisible.value = true;
+}
+
+const availabilityDialogIsVisible = ref(false);
+
+function openAvailabilityDialog(){
+  availabilityDialogIsVisible.value = true
 }
 
 const isCreateUserDialogVisible = ref(false);

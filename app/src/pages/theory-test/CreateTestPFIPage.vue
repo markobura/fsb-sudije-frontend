@@ -19,7 +19,7 @@
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer" color="primary">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale" >
-                          <q-date v-model="date" mask="DD.MM.YYYY"  no-unset default-view="Years">
+                          <q-date v-model="date" mask="DD.MM.YYYY"  no-unset>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Ok" color="primary" flat/>
                             </div>

@@ -9,11 +9,16 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     userDetails: {} as User,
     users: [] as User[],
+    userAvailability: [] as any[],
+    availabilities: [] as any[]
+
 
   }),
   getters: {
     getUsers: (state) => state.users,
-    getUserDetails: (state) => state.userDetails
+    getUserDetails: (state) => state.userDetails,
+    getUserAvailability: (state) => state.userAvailability,
+    getAvailabilities: (state) => state.availabilities
   },
   actions: {
 
@@ -68,6 +73,27 @@ export const useUserStore = defineStore('userStore', {
           useNotificationMessage('success','Uspešno obrisan korisnik!')
         })
     },
+
+    async deleteAvailability(id: string){
+      await api
+        .delete('/availability/'+id)
+        .then(()=>{
+          const index = this.userAvailability.findIndex(el => el.id === id);
+          if(index !== -1){
+            this.userAvailability.splice(index,1)
+          }
+          useNotificationMessage('success','Uspešno obrisana dostupnost!')
+        })
+    },
+
+    async getAvailabilitiesApi(){
+      console.log('cao')
+      await api
+        .get('/availabilities', )
+        .then((response) => {
+          this.availabilities = response.data;
+        })
+    }
 
 
 }

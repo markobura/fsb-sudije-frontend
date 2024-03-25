@@ -45,6 +45,24 @@ const routes: RouteRecordRaw[] = [
         name: 'test.pfi',
         meta: {middleware: [auth]}
       },
+      {
+        path: 'video-test',
+        component: () => import('pages/video-test/VideoTestPage.vue'),
+        name: 'video-test.overview',
+        meta: {middleware: [auth]}
+      },
+      {
+        path: 'video-test-details/:id',
+        component: () => import('pages/video-test/VideoTestDetailsPage.vue'),
+        name: 'video-test.details',
+        meta: {middleware: [auth]}
+      },
+      {
+        path: 'availability',
+        component: () => import('pages/availability/AvailabilityPage.vue'),
+        name: 'availability.index',
+        meta: {middleware: [auth]}
+      },
       // {
       //   path: 'users/:id',
       //   component: () => import('pages/UserDetailsPage.vue'),

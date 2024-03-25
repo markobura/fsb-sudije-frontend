@@ -10,7 +10,6 @@
           </q-avatar>
         </q-toolbar-title>
         <q-btn
-          v-if="useAuthenticatedUserStore().getUser.role !== 'FSB ADMIN'"
           style=" margin: 10px"
           flat
           label="Odjavi se"
@@ -76,9 +75,9 @@
             <q-item
               clickable
               v-ripple
-              :active="link === 'users'"
-              :to="{name: 'users.index'}"
-              @click="link = 'users'"
+              :active="link === 'video-test'"
+              :to="{name: 'video-test.overview'}"
+              @click="link = 'video-test'"
               active-class="my-menu-link"
             >
               <q-item-section avatar>
@@ -91,30 +90,30 @@
             <q-item
               clickable
               v-ripple
-              :active="link === 'create-test'"
-              :to="{name: 'test.create'}"
-              @click="link = 'create-test'"
+              :active="link === 'availability'"
+              :to="{name: 'availability.index'}"
+              @click="link = 'availability'"
               active-class="my-menu-link"
             >
               <q-item-section avatar>
-                <q-icon name="list"/>
+                <q-icon name="event_busy"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label> Pregled video testova </q-item-label>
+                <q-item-label> Pregled nedostupnosti </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
 
-            <q-btn
-              style="width: 90%; margin: 10px auto"
-              outline
-              rounded
-              class="absolute-bottom"
-              color="red"
-              label="Odjavi se"
-              icon="logout"
-              @click="logout"
-            />
+<!--            <q-btn-->
+<!--              style="width: 90%; margin: 10px auto"-->
+<!--              outline-->
+<!--              rounded-->
+<!--              class="absolute-bottom"-->
+<!--              color="red"-->
+<!--              label="Odjavi se"-->
+<!--              icon="logout"-->
+<!--              @click="logout"-->
+<!--            />-->
 
     </q-drawer>
 

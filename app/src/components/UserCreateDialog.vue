@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {useUserStore} from "stores/userStore";
 import BaseHeader from "components/BaseHeader.vue";
 import {Validator} from "quasar-easy-validate";
@@ -158,7 +158,6 @@ const emailRules = [(email: string) => new Validator(email)
 const isPwd = ref(true)
 
 if(props.user){
-  console.log('cao')
   name.value = props.user.first_name
   surname.value = props.user.last_name
   email.value = props.user.email
@@ -191,7 +190,6 @@ async function storeUser(){
     await userStore.storeNewUser(request);
   }
   if(props.mode === 'update'){
-    console.log('cao')
     const request = {
       first_name: name.value,
       last_name: surname.value,
@@ -207,8 +205,6 @@ async function storeUser(){
     await userStore.updateUser(request);
   }
   if(props.mode === 'user'){
-    console.log('cao')
-    console.log(props.user.id)
 
     const request = {
       first_name: name.value,
