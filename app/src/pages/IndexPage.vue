@@ -3,7 +3,8 @@
     <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap; width: 100%">
       <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni test PFI"
              icon="quiz" rounded @click="openTestPFIPage"/>
-      <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni video test" icon="play_circle" rounded />
+      <q-btn class="bg-primary text-white q-pa-md" style="margin-top: 50px" label="Započni video test"
+             icon="play_circle" rounded @click="openVideoTestPage"/>
     </div>
     <div>
       <q-card style="min-width: 350px" class="bg-blue-grey-1">
@@ -90,6 +91,12 @@ function toggleUserCreationDialog() {
 function openTestPFIPage(){
   router.push({
     name: 'test.pfi',
+  });
+}
+
+function openVideoTestPage(){
+  router.push({
+    name: 'video-test.active',
   });
 }
 

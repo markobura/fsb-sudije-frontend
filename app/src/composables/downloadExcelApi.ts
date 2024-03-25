@@ -6,8 +6,13 @@ export default async function useDownloadExcel(url: string, requestObject: any, 
       params: requestObject,
       responseType: 'arraybuffer'})
     .then((response)=>{
-      const blob = new File([response.data], fileName + '.xlsx',{type: response.headers['content-type']});
-      const url = window.URL.createObjectURL(blob)
-      window.open(url)
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.download = fileName + '.xlsx';
+      link.click();
     })
 }

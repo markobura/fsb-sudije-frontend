@@ -63,6 +63,12 @@ const routes: RouteRecordRaw[] = [
         name: 'availability.index',
         meta: {middleware: [auth]}
       },
+      {
+        path: 'active-video-test',
+        component: () => import('pages/video-test/ActiveVideoTestPage.vue'),
+        name: 'video-test.active',
+        meta: {middleware: [auth]}
+      },
       // {
       //   path: 'users/:id',
       //   component: () => import('pages/UserDetailsPage.vue'),

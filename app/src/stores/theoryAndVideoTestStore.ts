@@ -9,14 +9,18 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     activeTestExist: false,
     activeTest: {} as any,
     videoTests: [] as any[],
-    videoTest: {} as any
+    videoTest: {} as any,
+    activeVideoTestExist: false,
+    activeVideoTest: {} as any,
 
   }),
   getters: {
     getTheoryTest: (state) => state.theoryTest,
     getVideoTests: (state) => state.videoTests,
     getVideoTest: (state) => state.videoTest,
-    getActiveTest: (state) => state.activeTest
+    getActiveTest: (state) => state.activeTest,
+    getActiveVideoTest: (state) => state.activeVideoTest
+
   },
   actions: {
 
@@ -90,9 +94,43 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
           console.error('Greška prilikom dobijanja aktivnog testa:', error);
         }
       }
-
     },
 
+    async getActiveVideoTestApi(){
+      console.log('get active video test')
+      try {
+        const response = await api.get('/video-test/get-active-video-test');
+        console.log(response.data)
+        this.activeVideoTest = response.data;
+        this.activeVideoTest['questions'] = this.activeVideoTest.answers.map(el => {
+          return {
+            video: this.activeVideoTest.urls.find(el2 => el.order_id === el2.order_id).path,
+            order_id: el.order_id,
+            answers: el.answers.map((answer: any) => {
+              return {
+                answer_text: answer.answer_text,
+                is_correct: false
+              }
+            })
+          }
+        })
+
+        this.activeVideoTest.questions.sort(this.sortByOrderId)
+
+        this.activeVideoTestExist = true;
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          console.log('Test nije pronađen.');
+          this.activeVideoTestExist = false;
+        } else {
+          console.error('Greška prilikom dobijanja aktivnog testa:', error);
+        }
+      }
+    },
+
+     sortByOrderId(a: any, b: any) {
+        return a.order_id - b.order_id;
+    },
     async submitTest(answers: { answer: string }[]) {
 
       const request = {
@@ -101,6 +139,24 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       }
       try {
         const response = await api.post('/theory-test/submit-theory-test', request);
+        useNotificationMessage('success', response.data.message)
+      } catch (error: any) {
+        if (error.response && error.response.status === 409) {
+          useNotificationMessage('error',error.response.data.detail)
+        }
+      }
+
+    },
+    async submitVideoTest(answers: { answer: string }[]) {
+
+      const request = {
+        video_test_id: this.activeVideoTest.id,
+        answers
+      }
+
+      console.log(request);
+      try {
+        const response = await api.post('/video-test/submit-video-test', request);
         useNotificationMessage('success', response.data.message)
       } catch (error: any) {
         if (error.response && error.response.status === 409) {

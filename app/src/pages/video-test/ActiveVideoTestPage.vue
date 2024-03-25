@@ -2,35 +2,34 @@
   <q-page v-if="activeTestExist" padding>
     <q-card>
       <q-card-section>
-        <BaseHeader icon="quiz" title="TEST PRAVILA FUDBALSKE IGRE"></BaseHeader>
+        <BaseHeader icon="quiz" title="VIDEO TEST"></BaseHeader>
       </q-card-section>
       <q-separator inset/>
       <q-card-section>
-
-          <q-card-section  class="bg-blue-grey-1 q-pa-md"
-                           style="border-radius: 20px; margin-bottom: 10px"
-                           v-for="(question, index) in questions" :key="question"
-          >
-            <div style="width: 100%">
-              <span class="text-h6 text-primary" style="margin-bottom: 122px">{{index+1 + '. Pitanje'}}</span>
-              <q-item>
-                <span style="margin: 10px 0; width: 100%; font-size: 16px;" class="text-bold">
-                {{question.question_text}}
-              </span>
-              </q-item>
-              <q-item v-for="(answers,index2) in question.answers" :key="answers" dense style="margin-bottom: 10px">
-                <q-item-section>
+        <q-card-section  class="bg-blue-grey-1 q-pa-md"
+                         style="border-radius: 20px; margin-bottom: 10px"
+                         v-for="(question, index) in questions" :key="question"
+        >
+          <div style="width: 100%">
+            <span class="text-h6 text-primary" style="margin-bottom: 122px">{{question.order_id + '. Pitanje'}}</span>
+            <q-item style="display: flex; justify-content: center; margin-bottom: 20px">
+              <video controls style="max-width: 600px;" class="mobile-display">
+                <source :src="question.video" type="video/mp4"/>
+              </video>
+            </q-item>
+            <q-item v-for="(answers,index2) in question.answers" :key="answers" dense style="margin-bottom: 10px">
+              <q-item-section>
                   <span>
                   <strong class="text-primary">{{getAnswerOrder(index2)}}</strong>  {{answers.answer_text}}
                   </span>
-                </q-item-section>
-                <q-item-section side >
-                  <q-toggle color="green" v-model="answers.is_correct"
-                            @update:model-value="updateAnswers(index,index2)"/>
-                </q-item-section>
-              </q-item>
-            </div>
-          </q-card-section>
+              </q-item-section>
+              <q-item-section side >
+                <q-toggle color="green" v-model="answers.is_correct"
+                          @update:model-value="updateAnswers(index,index2)"/>
+              </q-item-section>
+            </q-item>
+          </div>
+        </q-card-section>
       </q-card-section>
       <q-card-section style="display: flex; justify-content: space-between">
         <div></div>
@@ -38,12 +37,12 @@
 
       </q-card-section>
     </q-card>
-
   </q-page>
+
   <q-page v-else class="row items-center justify-evenly">
 
     <q-card style="display: flex; height: 200px; max-width: 330px; background-color: #D3D3D3" class="no-padding">
-    <q-card-section style="align-self: center" >
+      <q-card-section style="align-self: center" >
         <q-icon name="warning" color="primary" size="50px"></q-icon>
       </q-card-section>
       <q-card-section style="align-self: center; display: flex; flex-direction: column">
@@ -62,32 +61,35 @@
 </template>
 
 <script setup lang="ts">
-import BaseHeader from 'components/BaseHeader.vue'
-import {computed, ref} from "vue";
-import useNotificationMessage from "src/composables/notificationMessage";
 import {useQuasar} from "quasar";
-import {useTheoryAndVideoTestStore} from "stores/theoryAndVideoTestStore";
 import {useRouter} from "vue-router";
+import {useTheoryAndVideoTestStore} from "stores/theoryAndVideoTestStore";
+import {computed, ref} from "vue";
+import BaseHeader from 'src/components/BaseHeader.vue'
+import useNotificationMessage from "src/composables/notificationMessage";
 
 const $q = useQuasar();
 const router = useRouter();
 
-const theoryTestStore = useTheoryAndVideoTestStore();
+const videoTestStore = useTheoryAndVideoTestStore();
 
 const activeTestExist = computed(()=>{
-  return theoryTestStore.activeTestExist;
+  return videoTestStore.activeVideoTestExist;
 })
 
+
 async function getActiveTest(){
-  await theoryTestStore.getActiveTestApi();
-  questions.value = theoryTestStore.getActiveTest.theory_questions;
+  console.log('video')
+  await videoTestStore.getActiveVideoTestApi();
+  questions.value = videoTestStore.getActiveVideoTest.questions;
   console.log(questions.value)
 }
 getActiveTest();
 
 let questions = ref([
   {
-    question_text: '',
+    video: '',
+    order_id: '',
     answers: [
       {answer_text: '',is_correct: false},
       {answer_text: '',is_correct: false},
@@ -97,6 +99,28 @@ let questions = ref([
   },
 ])
 
+function reloadPage(){
+  location.reload();
+}
+
+function getAnswerOrder(index: number){
+  switch (index){
+    case  0 :
+      return 'a) '
+    case  1 :
+      return 'b) '
+    case  2 :
+      return 'c) '
+    case  3 :
+      return 'd) '
+    case  4 :
+      return 'e) '
+    case  5 :
+      return 'f) '
+    case  6 :
+      return 'g) '
+  }
+}
 function updateAnswers(index: number,correctAnswer: number){
   switch (correctAnswer){
     case 0 :
@@ -121,6 +145,7 @@ function updateAnswers(index: number,correctAnswer: number){
       break;
   }
 }
+
 async function submit(){
   if(!validationSuccessful()){
     return;
@@ -154,7 +179,6 @@ function validationSuccessful(){
   return true;
 }
 
-
 function submitTest(testAnswers: { answer: string }[]){
   $q.dialog({
     title: 'Slanje testa',
@@ -166,37 +190,18 @@ function submitTest(testAnswers: { answer: string }[]){
     },
     cancel: true
   }).onOk(async () => {
-    await theoryTestStore.submitTest(testAnswers);
+    await videoTestStore.submitVideoTest(testAnswers);
     await router.push({
       name: 'home'
     })
   })
 }
-
-function reloadPage(){
-  location.reload();
-}
-
-function getAnswerOrder(index: number){
-  switch (index){
-    case  0 :
-      return 'a) '
-    case  1 :
-      return 'b) '
-    case  2 :
-      return 'c) '
-    case  3 :
-      return 'd) '
-    case  4 :
-      return 'e) '
-    case  5 :
-      return 'f) '
-    case  6 :
-      return 'g) '
-  }
-}
 </script>
 
 <style scoped>
-
+@media only screen and (max-width: 700px) {
+  .mobile-display {
+    width: 300px;
+  }
+}
 </style>
