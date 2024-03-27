@@ -111,8 +111,7 @@ const props = defineProps<{
   user?: User,
 }>();
 
-console.log(props.mode);
-console.log(props.user)
+
 
 const userStore = useUserStore();
 const userCreationDialog = ref();

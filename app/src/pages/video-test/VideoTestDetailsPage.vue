@@ -96,7 +96,7 @@ const videoTestStore = useTheoryAndVideoTestStore();
 const route = useRoute();
 
 async function showTest(){
-  await videoTestStore.showVideoTest(route.params.id);
+  await videoTestStore.showVideoTest(String(route.params.id));
 }
 showTest();
 
@@ -105,7 +105,8 @@ const videoTest = computed(()=>{
 })
 
 function getVideoUrl(orderId: number){
-  return videoTest.value.urls.find(el => el.order_id === orderId).path;
+  const index = videoTest.value.urls.findIndex(el => el.order_id === orderId)
+  return index !== -1 ? videoTest.value.urls[index].path : '';
 }
 
 const addVideoDialogIsVisible = ref(false)
@@ -125,13 +126,15 @@ function openAddVideoDialog(){
   ]
   dialogTitle.value = 'Novo pitanje'
   questionOrderId.value = videoTest.value.answers ? videoTest.value.answers.length + 1 : 1;
-
-  console.log(questionOrderId.value)
 }
+
 function openUpdateVideoDialog(orderId: number){
   addVideoDialogIsVisible.value = true
   video.value = null
-  answers.value = videoTest.value.answers.find(el => el.order_id === orderId).answers;
+  const index =  videoTest.value.answers.findIndex(el => el.order_id === orderId)
+  if(index !== -1){
+    answers.value = videoTest.value.answers[index].answers;
+  }
   dialogTitle.value = 'Ažuriranje ' + orderId + '. pitanja'
   questionOrderId.value = orderId
 }
@@ -186,7 +189,6 @@ async function saveQuestion(){
 
     await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'store');
 
-    console.log(answers.value)
 
     await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value, 'store');
 

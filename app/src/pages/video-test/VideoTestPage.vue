@@ -225,7 +225,6 @@ function openUpdateVideoTestDialog(test: any){
   refereeType.value = test.role
 }
 async function createVideoTest(){
-  console.log('create')
 
   if(endTime.value <= startTime.value){
     useNotificationMessage('error','Vreme završetka testa mora biti veće od vremena početka testa!');
@@ -249,8 +248,6 @@ async function createVideoTest(){
     league: [...league.value],
     role: [...refereeType.value],
   }
-
-  console.log(request);
 
   if(updateTestId.value === 0){
     await videoTestStore.storeVideoTest(request);
@@ -282,18 +279,13 @@ function deleteTest(id: string){
 }
 
 async function downloadResultsExcel(id: string){
-
-  console.log('excel download: '+id);
-
   await videoTestStore.downloadExcelVideoTest(id);
-
 }
 
 
 
 
 function openVideoTestDetails(id: number | string){
-  console.log(id)
   router.push({
     name: 'video-test.details',
     params: {id}

@@ -3,14 +3,23 @@ import useNotificationMessage from "src/composables/notificationMessage";
 import {api} from "boot/axios";
 import useDownloadExcel from "src/composables/downloadExcelApi";
 import {useCurrentDate} from "src/utils/dateHook";
+import {
+  Question,
+  QuestionAnswer,
+  StoreTestRequest,
+  TheoryTest,
+  Url,
+  VideoTest,
+  VideoTestAnswers
+} from "src/interfaces/tests";
 
 export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore', {
   state: () => ({
-    theoryTest: [] as any[],
+    theoryTest: [] as TheoryTest[],
     activeTestExist: false as boolean,
-    activeTest: {} as any,
-    videoTests: [] as any[],
-    videoTest: {} as any,
+    activeTest: {} as TheoryTest,
+    videoTests: [] as VideoTest[],
+    videoTest: {} as VideoTest,
     activeVideoTestExist: false as boolean,
     activeVideoTest: {} as any,
 
@@ -25,7 +34,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
   },
   actions: {
 
-    async storeTheoryTest(request: any) {
+    async storeTheoryTest(request: StoreTestRequest) {
 
       await api
         .post('/theory-test/', request)
@@ -57,16 +66,28 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     },
 
     async showTest(id: string){
-      let test = null;
+      let test = {
+        name: '',
+        start_date: '',
+        end_date: '',
+        league: [''],
+        role: [''],
+        theory_questions: [  {
+          question_text: '',
+          answers: [
+            {answer_text: '',is_correct: false},
+          ],
+        }]
+      };
       await api
         .get('/theory-test/'+id)
-        .then((response)=>{
+        .then((response: {data: TheoryTest})=>{
           test = response.data;
         })
       return test
     },
 
-    async updateTheoryTest(id: string, request: any){
+    async updateTheoryTest(id: string, request: StoreTestRequest){
       await api
         .patch('/theory-test/'+id, request)
         .then(()=>{
@@ -78,8 +99,8 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       try {
         const response = await api.get('/theory-test/get-active-theory-test');
         this.activeTest = response.data;
-        this.activeTest.theory_questions.forEach((el: any) => {
-            el.answers = el.answers.map((answer: any) => {
+        this.activeTest.theory_questions.forEach((el: Question) => {
+            el.answers = el.answers.map((answer: QuestionAnswer) => {
               return {
                 answer_text: answer.answer_text,
                 is_correct: false
@@ -87,18 +108,17 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
             })
         })
         this.activeTestExist = true;
-      } catch (error: any) {
-        if (error.response && error.response.status === 404) {
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Greška prilikom dobijanja aktivnog testa:', error);
+        } else {
           console.log('Test nije pronađen.');
           this.activeTestExist = false;
-        } else {
-          console.error('Greška prilikom dobijanja aktivnog testa:', error);
         }
       }
     },
 
     async getActiveVideoTestApi(){
-      console.log('get active video test')
       const date = new Date();
       const currentTime = useCurrentDate() + ' ' + date.getHours() + ':' + date.getMinutes()+ ':' + date.getSeconds();
       console.log(currentTime)
@@ -106,11 +126,11 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         const response = await api.get('/video-test/get-active-video-test');
         console.log(response.data)
         this.activeVideoTest = response.data;
-        this.activeVideoTest['questions'] = this.activeVideoTest.answers.map(el => {
+        this.activeVideoTest['questions'] = this.activeVideoTest.answers.map((el:VideoTestAnswers) => {
           return {
-            video: this.activeVideoTest.urls.find(el2 => el.order_id === el2.order_id).path,
+            video: this.activeVideoTest.urls.find((el2: Url) => el.order_id === el2.order_id).path,
             order_id: el.order_id,
-            answers: el.answers.map((answer: any) => {
+            answers: el.answers.map((answer: QuestionAnswer) => {
               return {
                 answer_text: answer.answer_text,
                 is_correct: false
@@ -122,8 +142,8 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         this.activeVideoTest.questions.sort(this.sortByOrderId)
 
         this.activeVideoTestExist = true;
-      } catch (error: any) {
-        if (error.response && error.response.status === 404) {
+      }catch (error: unknown) {
+        if (error instanceof Error) {
           console.log('Test nije pronađen.');
           this.activeVideoTestExist = false;
         } else {
@@ -132,13 +152,13 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       }
     },
 
-     sortByOrderId(a: any, b: any) {
+     sortByOrderId(a: VideoTestAnswers, b: VideoTestAnswers) {
         return a.order_id - b.order_id;
     },
     async submitTest(answers: { answer: string }[]) {
 
       const request = {
-        theory_test_id: this.activeTest.id,
+        test_id: this.activeTest.id,
         answers
       }
       try {
@@ -157,8 +177,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         test_id: this.activeVideoTest.id,
         answers
       }
-
-      console.log(request);
       try {
         const response = await api.post('/video-test/submit-video-test', request);
         useNotificationMessage('success', response.data.message)
@@ -173,8 +191,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     async downloadExcel(id: string){
 
       try {
-        // const response = await api.get('/theory-test/export-results/'+id);
-        // useNotificationMessage('success', response.data.message)
         const url ='/theory-test/export-results/'+id;
         await useDownloadExcel(url, {}, 'rezultati');
 

@@ -137,10 +137,10 @@ let startTime = ref('10:00');
 let endTime = ref('11:00');
 
 const leagueOptions = ['MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
-let league = ref([]);
+let league = ref(['']);
 
 const refereeTypeOptions = ['SUDIJA', 'POMOĆNI SUDIJA','DELEGAT'];
-let refereeType = ref([]);
+let refereeType = ref(['']);
 
 let questions = ref([
   {
@@ -159,7 +159,7 @@ if(route.params.id){
 }
 
 async function showTest(){
-  const test =  await theoryTestStore.showTest(route.params.id);
+  const test =  await theoryTestStore.showTest(String(route.params.id));
   if(test){
     date.value = useUIFormat(test.start_date.substring(0,10))
     startTime.value = test.start_date.substring(11,16)
@@ -229,7 +229,7 @@ async function submit(){
   }
 
   if(route.params.id){
-    await theoryTestStore.updateTheoryTest(route.params.id,request);
+    await theoryTestStore.updateTheoryTest(String(route.params.id),request);
 
   }else{
     await theoryTestStore.storeTheoryTest(request);

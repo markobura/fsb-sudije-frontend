@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {
+  StoreRequest,
   User,
 } from 'src/interfaces/user';
 import useNotificationMessage from "src/composables/notificationMessage";
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('userStore', {
         })
     },
 
-    async storeNewUser(request: any) {
+    async storeNewUser(request: StoreRequest) {
 
       await api
         .post('/user/', request)
@@ -39,7 +40,7 @@ export const useUserStore = defineStore('userStore', {
         })
 
     },
-    async updateUser(request: any){
+    async updateUser(request: StoreRequest){
       await api
         .patch('/user/'+request.id, request)
         .then((response)=>{
@@ -84,14 +85,13 @@ export const useUserStore = defineStore('userStore', {
         })
     },
 
-    async getAvailabilitiesApi(){
-      console.log('cao')
-      await api
-        .get('/availabilities', )
-        .then((response) => {
-          // this.availabilities = response.data;
-        })
-    }
+    // async getAvailabilitiesApi(){
+    //   await api
+    //     .get('/availabilities', )
+    //     .then(() => {
+    //       this.availabilities = response.data;
+    //     })
+    // }
 
 
 }
