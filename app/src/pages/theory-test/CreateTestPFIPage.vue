@@ -137,10 +137,10 @@ let startTime = ref('10:00');
 let endTime = ref('11:00');
 
 const leagueOptions = ['MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
-let league = ref([]);
+let league = ref<string[]>([]);
 
 const refereeTypeOptions = ['SUDIJA', 'POMOĆNI SUDIJA','DELEGAT'];
-let refereeType = ref([]);
+let refereeType = ref<string[]>([]);
 
 let questions = ref([
   {
