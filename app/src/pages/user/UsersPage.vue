@@ -130,7 +130,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {useUserStore} from "stores/userStore";
-import {useRouter} from "vue-router";
 import BaseHeader from "components/BaseHeader.vue";
 import useUserTableColumns from "src/columns/userTableColumns";
 import BaseTooltip from "components/BaseTooltip.vue";
@@ -143,7 +142,6 @@ const UserCreateDialog = defineAsyncComponent(() => import('components/UserCreat
 const $q = useQuasar();
 
 const userStore = useUserStore();
-const router = useRouter();
 const users = computed(function () {
   return userStore.getUsers;
 })

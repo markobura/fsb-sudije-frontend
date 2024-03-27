@@ -174,7 +174,6 @@ import {useQuasar, date} from "quasar";
 import {useUserStore} from "stores/userStore";
 import {computed, ref} from "vue";
 import useUserAvailabilityTableColumns from "src/columns/userAvailabilityColumns";
-import DateRangeFilter from 'src/components/DateRangeFilter.vue'
 import {useCurrentDate, useDBFormat} from "src/utils/dateHook";
 import useNotificationMessage from "src/composables/notificationMessage";
 
@@ -262,7 +261,6 @@ async function addAvailability(){
     return;
   }
 
-  console.log('add');
   availability.value.push({
     period: dateUnavailable.value,
     time: startTime.value + ' - ' + endTime.value,

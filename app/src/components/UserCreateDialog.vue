@@ -199,8 +199,8 @@ async function storeUser(){
       role: role.value,
       league: league.value,
       referee_type: refereeType.value,
-      active:  props.user.active,
-      id: props.user.id
+      active:  props.user ? props.user.active : true,
+      id: props.user ? props.user.id : ''
     }
     await userStore.updateUser(request);
   }
@@ -215,8 +215,8 @@ async function storeUser(){
       role: role.value,
       league: league.value,
       referee_type: refereeType.value,
-      active:  props.user.active,
-      id: props.user.id
+      active:  props.user ? props.user.active : true,
+      id: props.user ? props.user.id : ''
     }
     await userStore.updateUser(request);
 

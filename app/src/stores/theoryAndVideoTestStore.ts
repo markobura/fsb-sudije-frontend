@@ -2,15 +2,16 @@ import {defineStore} from 'pinia';
 import useNotificationMessage from "src/composables/notificationMessage";
 import {api} from "boot/axios";
 import useDownloadExcel from "src/composables/downloadExcelApi";
+import {useCurrentDate} from "src/utils/dateHook";
 
 export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore', {
   state: () => ({
     theoryTest: [] as any[],
-    activeTestExist: false,
+    activeTestExist: false as boolean,
     activeTest: {} as any,
     videoTests: [] as any[],
     videoTest: {} as any,
-    activeVideoTestExist: false,
+    activeVideoTestExist: false as boolean,
     activeVideoTest: {} as any,
 
   }),
@@ -98,6 +99,9 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async getActiveVideoTestApi(){
       console.log('get active video test')
+      const date = new Date();
+      const currentTime = useCurrentDate() + ' ' + date.getHours() + ':' + date.getMinutes()+ ':' + date.getSeconds();
+      console.log(currentTime)
       try {
         const response = await api.get('/video-test/get-active-video-test');
         console.log(response.data)
@@ -150,7 +154,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     async submitVideoTest(answers: { answer: string }[]) {
 
       const request = {
-        video_test_id: this.activeVideoTest.id,
+        test_id: this.activeVideoTest.id,
         answers
       }
 

@@ -1,10 +1,6 @@
 import {RouteRecordRaw} from 'vue-router';
 import auth from 'src/middleware/auth';
 import guest from 'src/middleware/guest';
-import setupUsersPage from "src/middleware/setupUsersPage";
-import setupUserDetailsPage from "src/middleware/setupUserDetailsPage";
-import setupLogsPage from "src/middleware/setupLogsPage";
-
 
 const routes: RouteRecordRaw[] = [
   {
@@ -69,12 +65,6 @@ const routes: RouteRecordRaw[] = [
         name: 'video-test.active',
         meta: {middleware: [auth]}
       },
-      // {
-      //   path: 'users/:id',
-      //   component: () => import('pages/UserDetailsPage.vue'),
-      //   name: 'users.show',
-      //   // meta: {middleware: [auth, setupUserDetailsPage]}
-      // },
 
     ],
   },

@@ -87,21 +87,21 @@
                 <q-item-label> Video test </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active="link === 'availability'"
-              :to="{name: 'availability.index'}"
-              @click="link = 'availability'"
-              active-class="my-menu-link"
-            >
-              <q-item-section avatar>
-                <q-icon name="event_busy"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label> Pregled nedostupnosti </q-item-label>
-              </q-item-section>
-            </q-item>
+<!--            <q-item-->
+<!--              clickable-->
+<!--              v-ripple-->
+<!--              :active="link === 'availability'"-->
+<!--              :to="{name: 'availability.index'}"-->
+<!--              @click="link = 'availability'"-->
+<!--              active-class="my-menu-link"-->
+<!--            >-->
+<!--              <q-item-section avatar>-->
+<!--                <q-icon name="event_busy"/>-->
+<!--              </q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label> Pregled nedostupnosti </q-item-label>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
           </q-list>
 
 <!--            <q-btn-->

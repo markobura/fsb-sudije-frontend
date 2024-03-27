@@ -9,16 +9,14 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     userDetails: {} as User,
     users: [] as User[],
-    userAvailability: [] as any[],
-    availabilities: [] as any[]
-
-
+    // userAvailability: [] as any[],
+    // availabilities: [] as any[]
   }),
   getters: {
     getUsers: (state) => state.users,
     getUserDetails: (state) => state.userDetails,
-    getUserAvailability: (state) => state.userAvailability,
-    getAvailabilities: (state) => state.availabilities
+    // getUserAvailability: (state) => state.userAvailability,
+    // getAvailabilities: (state) => state.availabilities
   },
   actions: {
 
@@ -78,10 +76,10 @@ export const useUserStore = defineStore('userStore', {
       await api
         .delete('/availability/'+id)
         .then(()=>{
-          const index = this.userAvailability.findIndex(el => el.id === id);
-          if(index !== -1){
-            this.userAvailability.splice(index,1)
-          }
+          // const index = this.userAvailability.findIndex(el => el.id === id);
+          // if(index !== -1){
+          //   this.userAvailability.splice(index,1)
+          // }
           useNotificationMessage('success','Uspešno obrisana dostupnost!')
         })
     },
@@ -91,7 +89,7 @@ export const useUserStore = defineStore('userStore', {
       await api
         .get('/availabilities', )
         .then((response) => {
-          this.availabilities = response.data;
+          // this.availabilities = response.data;
         })
     }
 
