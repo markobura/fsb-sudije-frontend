@@ -63,7 +63,7 @@
               dense
               style="width: 100%"
               filled
-              v-model="answer.answer_text"
+              v-model.trim="answer.answer_text"
               :label="`Ponuđeni odgovor ${index+1}`"
               lazy-rules
               hint=""
@@ -157,6 +157,21 @@ function updateAnswers(answerIndex: number){
 }
 
 async function saveQuestion(){
+  let nonEmptyAnswers = answers.value.filter(answer =>  answer.answer_text !== '')
+
+  if(nonEmptyAnswers.length < 2){
+    useNotificationMessage('error','Morate uneti najmanje 2 odgovora!');
+    return false;
+  }
+
+  const index2 = answers.value.findIndex(el => {
+    return el.is_correct;
+  });
+
+  if(index2 === -1){
+    useNotificationMessage('error','Niste obeležili tačan odgovor!');
+    return false;
+  }
 
   if(dialogTitle.value === 'Novo pitanje'){
     if(!video.value){
@@ -164,25 +179,6 @@ async function saveQuestion(){
       return
     }
 
-    // const index = answers.value.findIndex(el => {
-    //   return el.answer_text === '';
-    // })
-    //
-    // if(index !== -1){
-    //   useNotificationMessage('error','Nisu uneti svi ponuđeni odgovori!');
-    //   return false;
-    // }
-
-    // validation for answers passed
-
-    const index2 = answers.value.findIndex(el => {
-      return el.is_correct;
-    });
-
-    if(index2 === -1){
-      useNotificationMessage('error','Niste obeležili tačan odgovor!');
-      return false;
-    }
 
     const request = new FormData();
 
@@ -235,6 +231,7 @@ async function updateQuestion(){
   }
 
   console.log(answers.value)
+
 
   for (let i = answers.value.length - 1; i >= 0; i--) {
     const answer = answers.value[i];

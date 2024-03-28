@@ -86,7 +86,7 @@
                           dense
                           style="width: 100%"
                           filled
-                          v-model="answers.answer_text"
+                          v-model.trim="answers.answer_text"
                           :label="`Ponuđeni odgovor ${index2+1}`"
                           lazy-rules
                           hint=""
@@ -295,16 +295,27 @@ function validationSuccessful(){
 
   // validation for question passed
 
-  // empty answers exist
+  //minimum 2 questions
 
-  const index2 = questions.value.findIndex(el => {
-    return el.answers.every(answer => answer.answer_text === '');
+  const index4 = questions.value.findIndex(el => {
+    let nonEmptyAnswers = el.answers.filter(answer =>  answer.answer_text !== '')
+    return nonEmptyAnswers.length < 2
   })
-
-  if(index2 !== -1){
-    useNotificationMessage('error','Za pitanje broj ' + Number(Number(index2)+1) + ' nisu uneti svi ponuđeni odgovori!');
+  if(index4 !== -1){
+    useNotificationMessage('error','Za pitanje broj ' + Number(Number(index4)+1) + ' morate uneti najmanje 2 odgovora!');
     return false;
   }
+
+  // empty answers exist
+
+  // const index2 = questions.value.findIndex(el => {
+  //   return el.answers.every(answer => answer.answer_text === '');
+  // })
+  //
+  // if(index2 !== -1){
+  //   useNotificationMessage('error','Za pitanje broj ' + Number(Number(index2)+1) + ' nisu uneti svi ponuđeni odgovori!');
+  //   return false;
+  // }
 
   // validation for answers passed
 
