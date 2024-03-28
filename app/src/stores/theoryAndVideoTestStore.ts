@@ -142,8 +142,8 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         this.activeVideoTest.questions.sort(this.sortByOrderId)
 
         this.activeVideoTestExist = true;
-      }catch (error: unknown) {
-        if (error instanceof Error) {
+      }catch (error: any) {
+        if (error.response && error.response.status === 404) {
           console.log('Test nije pronađen.');
           this.activeVideoTestExist = false;
         } else {
@@ -196,7 +196,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
-          useNotificationMessage('error',error.response.data.detail)
+          useNotificationMessage('error','Nema rezultata za ovaj video test!')
         }
       }
     },

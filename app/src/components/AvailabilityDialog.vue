@@ -11,7 +11,7 @@
         <q-table :rows="availability" :columns="columns" row-key="name" dense>
           <template v-slot:top-left>
             <q-btn
-              :disable="buttonsAreDisabled"
+
               round
               color="green"
               icon="add"

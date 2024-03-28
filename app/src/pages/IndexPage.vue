@@ -17,9 +17,9 @@
             <q-btn size="sm" class="q-ma-sm bg-red text-white" round icon="lock" @click="openChangePasswordDialog">
               <BaseTooltip class="bg-red" tooltip="Promena lozinke"/>
             </q-btn>
-            <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="image">
-              <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>
-            </q-btn>
+<!--            <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="image">-->
+<!--              <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>-->
+<!--            </q-btn>-->
 <!--            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">-->
 <!--              <BaseTooltip class="bg-teal-9" tooltip="Dostupnost"/>-->
 <!--            </q-btn>-->

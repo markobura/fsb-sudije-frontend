@@ -14,6 +14,7 @@
           <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
             <div style="min-width: 350px" class="q-pa-md">
               <q-input
+                :readonly="props.mode === 'user'"
                 style="margin-bottom: 10px"
                 filled
                 v-model="name"
@@ -24,6 +25,7 @@
                 autofocus
               />
               <q-input
+                :readonly="props.mode === 'user'"
                 style="margin-bottom: 10px"
                 filled
                 v-model="surname"
@@ -53,9 +55,11 @@
 
               <q-input   style="margin-bottom: 10px" filled v-model="dateOfBirth" hint="Izaberite datum rođenja"  readonly>
                 <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer" color="primary">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale" >
-                      <q-date v-model="dateOfBirth" mask="DD.MM.YYYY"  no-unset default-view="Years">
+                  <q-icon name="event" class="cursor-pointer" color="primary"
+
+                  >
+                    <q-popup-proxy  cover transition-show="scale" transition-hide="scale" >
+                      <q-date v-if="props.mode !== 'user'" v-model="dateOfBirth" mask="DD.MM.YYYY"  no-unset default-view="Years">
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Ok" color="primary" flat/>
                         </div>
@@ -66,9 +70,9 @@
               </q-input>
             </div>
             <div style="min-width: 350px" class="q-pa-md">
-              <q-select  style="margin-bottom: 10px" filled v-model="role" :options="roleOptions" label="Tip korisnika" hint="Izaberite tip korisnika" />
-              <q-select  style="margin-bottom: 10px" filled v-model="league" :options="leagueOptions" label="Liga" hint="Izaberite ligu" />
-              <q-select  style="margin-bottom: 10px" filled v-model="refereeType" :options="refereeTypeOptions" label="Lista sudije" hint="Izaberite sa koje je liste sudija" />
+              <q-select :readonly="props.mode === 'user'" style="margin-bottom: 10px" filled v-model="role" :options="roleOptions" label="Tip korisnika" hint="Izaberite tip korisnika" />
+              <q-select :readonly="props.mode === 'user'"   style="margin-bottom: 10px" filled v-model="league" :options="leagueOptions" label="Liga" hint="Izaberite ligu" />
+              <q-select  :readonly="props.mode === 'user'"  style="margin-bottom: 10px" filled v-model="refereeType" :options="refereeTypeOptions" label="Lista sudije" hint="Izaberite sa koje je liste sudija" />
               <q-input
                 v-if="props.mode==='create'"
                 style="margin-bottom: 10px"

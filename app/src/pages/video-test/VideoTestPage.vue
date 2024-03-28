@@ -2,7 +2,7 @@
 <q-page padding>
   <q-card>
     <q-card-section>
-      <BaseHeader icon="play_circle" title="Video testovi"></BaseHeader>
+      <BaseHeader icon="play_circle" title="Video test"></BaseHeader>
     </q-card-section>
     <q-separator inset/>
     <q-card-section>

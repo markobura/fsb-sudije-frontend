@@ -121,29 +121,12 @@ function getAnswerOrder(index: number){
       return 'g) '
   }
 }
-function updateAnswers(index: number,correctAnswer: number){
-  switch (correctAnswer){
-    case 0 :
-      questions.value[index].answers[1].is_correct = false;
-      questions.value[index].answers[2].is_correct = false;
-      questions.value[index].answers[3].is_correct= false;
-      break;
-    case 1 :
-      questions.value[index].answers[0].is_correct = false;
-      questions.value[index].answers[2].is_correct = false;
-      questions.value[index].answers[3].is_correct = false;
-      break;
-    case 2 :
-      questions.value[index].answers[0].is_correct = false;
-      questions.value[index].answers[1].is_correct = false;
-      questions.value[index].answers[3].is_correct = false;
-      break;
-    case 3 :
-      questions.value[index].answers[0].is_correct = false;
-      questions.value[index].answers[1].is_correct = false;
-      questions.value[index].answers[2].is_correct = false;
-      break;
-  }
+function updateAnswers(indexAnswer: number,correctAnswer: number){
+  questions.value[indexAnswer].answers.forEach((el,index) => {
+    if(index !== correctAnswer){
+      el.is_correct = false
+    }
+  })
 }
 
 async function submit(){
@@ -194,6 +177,7 @@ function submitTest(testAnswers: { answer: string }[]){
     await router.push({
       name: 'home'
     })
+    location.reload();
   })
 }
 </script>

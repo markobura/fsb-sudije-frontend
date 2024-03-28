@@ -66,7 +66,7 @@
               v-model="answer.answer_text"
               :label="`Ponuđeni odgovor ${index+1}`"
               lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
+              hint=""
               type="text"
             />
           </q-item-section>
@@ -148,7 +148,7 @@ const answers = ref([
   {answer_text: '',is_correct: false}
 ])
 
-function updateAnswers(answerIndex: number  ){
+function updateAnswers(answerIndex: number){
   answers.value.forEach((el,index) => {
     if(index !== answerIndex){
       el.is_correct = false
@@ -161,16 +161,17 @@ async function saveQuestion(){
   if(dialogTitle.value === 'Novo pitanje'){
     if(!video.value){
       useNotificationMessage('error','Morate uploadovati video!')
+      return
     }
 
-    const index = answers.value.findIndex(el => {
-      return el.answer_text === '';
-    })
-
-    if(index !== -1){
-      useNotificationMessage('error','Nisu uneti svi ponuđeni odgovori!');
-      return false;
-    }
+    // const index = answers.value.findIndex(el => {
+    //   return el.answer_text === '';
+    // })
+    //
+    // if(index !== -1){
+    //   useNotificationMessage('error','Nisu uneti svi ponuđeni odgovori!');
+    //   return false;
+    // }
 
     // validation for answers passed
 
@@ -189,6 +190,15 @@ async function saveQuestion(){
 
     await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'store');
 
+    console.log(answers.value)
+
+      for (let i = answers.value.length - 1; i >= 0; i--) {
+        const answer = answers.value[i];
+        if (!answer.is_correct && answer.answer_text === '') {
+          answers.value.splice(i, 1);
+        }
+      }
+    console.log(answers.value)
 
     await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value, 'store');
 
@@ -206,14 +216,14 @@ async function saveQuestion(){
 
 async function updateQuestion(){
 
-  const index = answers.value.findIndex(el => {
-    return el.answer_text === '';
-  })
-
-  if(index !== -1){
-    useNotificationMessage('error','Nisu uneti svi ponuđeni odgovori!');
-    return false;
-  }
+  // const index = answers.value.findIndex(el => {
+  //   return el.answer_text === '';
+  // })
+  //
+  // if(index !== -1){
+  //   useNotificationMessage('error','Nisu uneti svi ponuđeni odgovori!');
+  //   return false;
+  // }
 
 
   if(video.value){
@@ -224,6 +234,15 @@ async function updateQuestion(){
     await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'update');
   }
 
+  console.log(answers.value)
+
+  for (let i = answers.value.length - 1; i >= 0; i--) {
+    const answer = answers.value[i];
+    if (!answer.is_correct && answer.answer_text === '') {
+      answers.value.splice(i, 1);
+    }
+  }
+  console.log(answers.value)
 
   await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value,  'update');
 

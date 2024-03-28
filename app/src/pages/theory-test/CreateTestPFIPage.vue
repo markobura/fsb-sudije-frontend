@@ -89,7 +89,7 @@
                           v-model="answers.answer_text"
                           :label="`Ponuđeni odgovor ${index2+1}`"
                           lazy-rules
-                          :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
+                          hint=""
                           type="text"
                         />
                       </q-item-section>
@@ -228,6 +228,19 @@ async function submit(){
     theory_questions: [...questions.value]
   }
 
+  console.log(request.theory_questions)
+
+  request.theory_questions.forEach(el => {
+    for (let i = el.answers.length - 1; i >= 0; i--) {
+      const answer = el.answers[i];
+      if (!answer.is_correct && answer.answer_text === '') {
+        el.answers.splice(i, 1);
+      }
+    }
+  });
+  console.log(request.theory_questions)
+
+
   if(route.params.id){
     await theoryTestStore.updateTheoryTest(String(route.params.id),request);
 
@@ -285,7 +298,7 @@ function validationSuccessful(){
   // empty answers exist
 
   const index2 = questions.value.findIndex(el => {
-    return el.answers.find(answer => answer.answer_text === '');
+    return el.answers.every(answer => answer.answer_text === '');
   })
 
   if(index2 !== -1){
