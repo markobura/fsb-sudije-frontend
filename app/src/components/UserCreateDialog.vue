@@ -3,7 +3,7 @@
     <q-card style="max-width: 800px">
       <q-card-section class="bg-primary text-white my-header">
         <BaseHeader icon="person_add" :title="props.mode === 'create' ? 'Kreiranje novog korisnika' : props.user.first_name + ' ' + props.user.last_name"></BaseHeader>
-        <q-btn v-close-popup icon="close" color="white" flat rounded></q-btn>
+        <q-btn v-close-popup icon="close" color="white" flat rounded ></q-btn>
       </q-card-section>
       <q-card-section>
         <q-form
