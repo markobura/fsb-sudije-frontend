@@ -219,8 +219,11 @@ function openUpdateVideoTestDialog(test: any){
   createVideoTestDialogIsVisible.value = true
   updateTestId.value = test.id
   date.value = useUIFormat(test.start_date.substring(0,10));
-  startTime.value = test.start_date.substring(11,16)
-  endTime.value = test.end_date.substring(11,16)
+  const timeZone = new Date().getTimezoneOffset() / 60;
+  const startTimeHours = Number(test.start_date.substring(11,13)) - timeZone
+  const endTimeHours = Number(test.end_date.substring(11,13)) - timeZone
+  startTime.value = startTimeHours+':'+test.start_date.substring(14,16)
+  endTime.value = endTimeHours+':'+test.start_date.substring(14,16)
   league.value = test.league
   refereeType.value = test.role
 }
@@ -241,10 +244,13 @@ async function createVideoTest(){
     return false;
   }
 
+  const startDate = new Date(useDBFormat(date.value)+'T'+startTime.value+':00');
+  const endDate = new Date(useDBFormat(date.value)+'T'+endTime.value+':00');
+
   const request = {
     name: 'Test: ' + date.value + ' ' + startTime.value,
-    start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279+02:00',
-    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279+02:00',
+    start_date: startDate.toISOString(),
+    end_date: endDate.toISOString(),
     league: [...league.value],
     role: [...refereeType.value],
   }

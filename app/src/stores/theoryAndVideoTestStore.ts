@@ -164,6 +164,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       try {
         const response = await api.post('/theory-test/submit-theory-test', request);
         useNotificationMessage('success', response.data.message)
+        this.activeTestExist = false;
       } catch (error: any) {
         if (error.response && error.response.status === 409) {
           useNotificationMessage('error',error.response.data.detail)
@@ -180,6 +181,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       try {
         const response = await api.post('/video-test/submit-video-test', request);
         useNotificationMessage('success', response.data.message)
+        this.activeVideoTestExist = false;
       } catch (error: any) {
         if (error.response && error.response.status === 409) {
           useNotificationMessage('error',error.response.data.detail)
