@@ -243,8 +243,8 @@ async function createVideoTest(){
 
   const request = {
     name: 'Test: ' + date.value + ' ' + startTime.value,
-    start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279Z',
-    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279Z',
+    start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279+02:00',
+    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279+02:00',
     league: [...league.value],
     role: [...refereeType.value],
   }

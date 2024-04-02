@@ -219,10 +219,12 @@ async function submit(){
     return;
   }
 
+  console.log('capsss')
+
   const request = {
     name: 'Test: ' + date.value + ' ' + startTime.value,
-    start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279+01:00',
-    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279+01:00',
+    start_date: useDBFormat(date.value)+'T'+startTime.value + ':00.279+02:00',
+    end_date: useDBFormat(date.value)+'T'+endTime.value + ':00.279+02:00',
     league: [...league.value],
     role: [...refereeType.value],
     theory_questions: [...questions.value]
