@@ -23,7 +23,9 @@ jobs:
         run: npm install
 
       - name: Build QuasarJS app
-        run: npm run build
+        run: |
+            cd app
+            npm run build
 
   deploy:
     needs: build
