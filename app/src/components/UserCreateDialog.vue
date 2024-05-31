@@ -12,7 +12,7 @@
           class="q-gutter-md"
         >
           <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
-            <div style="min-width: 350px" class="q-pa-md">
+            <div style="min-width: 300px" class="q-pa-md">
               <q-input
                 :readonly="props.mode === 'user'"
                 style="margin-bottom: 10px"
@@ -69,7 +69,7 @@
                 </template>
               </q-input>
             </div>
-            <div style="min-width: 350px" class="q-pa-md">
+            <div style="min-width: 300px" class="q-pa-md">
               <q-select :readonly="props.mode === 'user'" style="margin-bottom: 10px" filled v-model="role" :options="roleOptions" label="Tip korisnika" hint="Izaberite tip korisnika" />
               <q-select :readonly="props.mode === 'user'"   style="margin-bottom: 10px" filled v-model="league" :options="leagueOptions" label="Liga" hint="Izaberite ligu" />
               <q-select  :readonly="props.mode === 'user'"  style="margin-bottom: 10px" filled v-model="refereeType" :options="refereeTypeOptions" label="Lista sudije" hint="Izaberite sa koje je liste sudija" />
