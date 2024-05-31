@@ -16,7 +16,7 @@
           label='Stara lozinka'
           hint='Unesite staru lozinku'
           :password-input="true"
-          :rules="[ val => val && val.length >= 8 || 'Ovo polje je obavezno i mora imati najmanje 8 karaktera!']"
+          :rules="[ val => val && val.length >= 5 || 'Ovo polje je obavezno i mora imati najmanje 5 karaktera!']"
           :type="oldPasswordInputType"
           @toggle-password="isPwdOld = !isPwdOld"
           style="margin-bottom: 15px"
@@ -26,7 +26,7 @@
           label='Nova lozinka'
           hint='Unesite novu lozinku'
           :password-input="true"
-          :rules="[ val => val && val.length >= 8 || 'Ovo polje je obavezno i mora imati najmanje 8 karaktera!']"
+          :rules="[ val => val && val.length >= 5 || 'Ovo polje je obavezno i mora imati najmanje 5 karaktera!']"
           :type="passwordInputType"
           @toggle-password="isPwd = !isPwd"
           style="margin-bottom: 30px"
@@ -36,7 +36,7 @@
           label='Potvrda nove lozinke'
           hint='Potvrdite unetu lozinku'
           :password-input="true"
-          :rules="[ val => val && val.length >= 8 || 'Ovo polje je obavezno i mora imati najmanje 8 karaktera!', isConfirmed]"
+          :rules="[ val => val && val.length >= 5 || 'Ovo polje je obavezno i mora imati najmanje 5 karaktera!', isConfirmed]"
           :type="passwordInputTypeConfirm"
           @toggle-password="isPwdConfirm = !isPwdConfirm"
           style="margin-bottom: 30px"
