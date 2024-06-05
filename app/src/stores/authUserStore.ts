@@ -21,7 +21,7 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       formData.append('password', request.password);
 
       await api
-        .post('/auth/token', formData)
+        .post('/auth/token/', formData)
         .then((response)=>{
           console.log(response)
           this.setUserData(response.data.user);
@@ -36,7 +36,7 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       const formData = new FormData();
       formData.append('old_password', changePasswordRequest.old_password);
       formData.append('new_password', changePasswordRequest.new_password);
-      const url = `/user/change-password?old_password=${changePasswordRequest.old_password}&new_password=${changePasswordRequest.new_password}`
+      const url = `/user/change-password?old_password=${changePasswordRequest.old_password}&new_password=${changePasswordRequest.new_password}/`
       await api
         .patch(url)
         .then((response)=>{
@@ -57,7 +57,7 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       const email = Cookies.get('email');
       console.log(email)
       await api
-        .get('/user/me', )
+        .get('/user/me/', )
         .then((response) => {
           console.log(response)
           const userSessionFound = response.data;

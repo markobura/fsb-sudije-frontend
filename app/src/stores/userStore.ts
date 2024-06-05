@@ -24,7 +24,7 @@ export const useUserStore = defineStore('userStore', {
 
     async getUserList() {
       await api
-        .get('/user', )
+        .get('/user/', )
         .then((response) => {
           this.users = response.data;
         })
@@ -42,7 +42,7 @@ export const useUserStore = defineStore('userStore', {
     },
     async updateUser(request: StoreRequest){
       await api
-        .patch('/user/'+request.id, request)
+        .patch('/user/'+request.id+'/', request)
         .then((response)=>{
           const index = this.users.findIndex(el => el.id === request.id);
           if(index !== -1){
@@ -54,7 +54,7 @@ export const useUserStore = defineStore('userStore', {
 
     async changePassword(changePasswordRequest: {user_id: string, new_password: string}){
       await api
-        .patch('/user/change-user-password',changePasswordRequest)
+        .patch('/user/change-user-password/',changePasswordRequest)
         .then((response)=>{
           console.log(response)
           useNotificationMessage('success','Uspešno promenjena lozinka!')
@@ -63,7 +63,7 @@ export const useUserStore = defineStore('userStore', {
 
     async deleteUser(id: string){
       await api
-        .delete('/user/'+id)
+        .delete('/user/'+id+'/')
         .then(()=>{
           const index = this.users.findIndex(el => el.id === id);
           if(index !== -1){
@@ -75,7 +75,7 @@ export const useUserStore = defineStore('userStore', {
 
     async deleteAvailability(id: string){
       await api
-        .delete('/availability/'+id)
+        .delete('/availability/'+id+'/')
         .then(()=>{
           // const index = this.userAvailability.findIndex(el => el.id === id);
           // if(index !== -1){
