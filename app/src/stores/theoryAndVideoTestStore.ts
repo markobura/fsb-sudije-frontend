@@ -55,7 +55,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async deleteTest(id: string){
       await api
-        .delete('/theory-test/'+id)
+        .delete('/theory-test/'+id+'/')
         .then(()=>{
           const index = this.theoryTest.findIndex(el => el.id === id);
           if(index !== -1){
@@ -80,7 +80,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         }]
       };
       await api
-        .get('/theory-test/'+id)
+        .get('/theory-test/'+id+'/')
         .then((response: {data: TheoryTest})=>{
           test = response.data;
         })
@@ -89,7 +89,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async updateTheoryTest(id: string, request: StoreTestRequest){
       await api
-        .patch('/theory-test/'+id, request)
+        .patch('/theory-test/'+id+'/', request)
         .then(()=>{
           useNotificationMessage('success','Uspešno ažuriran test!')
         })
@@ -97,7 +97,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async getActiveTestApi(){
       try {
-        const response = await api.get('/theory-test/get-active-theory-test');
+        const response = await api.get('/theory-test/get-active-theory-test/');
         this.activeTest = response.data;
         this.activeTest.theory_questions.forEach((el: Question) => {
             el.answers = el.answers.map((answer: QuestionAnswer) => {
@@ -123,7 +123,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       const currentTime = useCurrentDate() + ' ' + date.getHours() + ':' + date.getMinutes()+ ':' + date.getSeconds();
       console.log(currentTime)
       try {
-        const response = await api.get('/video-test/get-active-video-test');
+        const response = await api.get('/video-test/get-active-video-test/');
         console.log(response.data)
         this.activeVideoTest = response.data;
         this.activeVideoTest['questions'] = this.activeVideoTest.answers.map((el:VideoTestAnswers) => {
@@ -162,7 +162,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         answers
       }
       try {
-        const response = await api.post('/theory-test/submit-theory-test', request);
+        const response = await api.post('/theory-test/submit-theory-test/', request);
         useNotificationMessage('success', response.data.message)
         this.activeTestExist = false;
       } catch (error: any) {
@@ -179,7 +179,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         answers
       }
       try {
-        const response = await api.post('/video-test/submit-video-test', request);
+        const response = await api.post('/video-test/submit-video-test/', request);
         useNotificationMessage('success', response.data.message)
         this.activeVideoTestExist = false;
       } catch (error: any) {
@@ -193,7 +193,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     async downloadExcel(id: string){
 
       try {
-        const url ='/theory-test/export-results/'+id;
+        const url ='/theory-test/export-results/'+id+'/';
         await useDownloadExcel(url, {}, 'rezultati');
 
       } catch (error: any) {
@@ -208,7 +208,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       try {
         // const response = await api.get('/theory-test/export-results/'+id);
         // useNotificationMessage('success', response.data.message)
-        const url ='/video-test/export-results/'+id;
+        const url ='/video-test/export-results/'+id+'/';
         await useDownloadExcel(url, {}, 'rezultati-video-test');
 
       } catch (error: any) {
@@ -252,7 +252,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async deleteVideoTest(id: string){
       await api
-        .delete('/video-test/'+id)
+        .delete('/video-test/'+id+'/')
         .then(()=>{
           const index = this.videoTests.findIndex(el => el.id === id);
           if(index !== -1){
@@ -298,7 +298,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     },
     async showVideoTest(id: string){
       await api
-        .get('/video-test/'+id)
+        .get('/video-test/'+id+'/')
         .then((response)=>{
           this.videoTest = response.data;
         })
