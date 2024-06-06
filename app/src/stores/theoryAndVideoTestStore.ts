@@ -37,7 +37,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     async storeTheoryTest(request: StoreTestRequest) {
 
       await api
-        .post('/theory-test', request)
+        .post('/theory-test/', request)
         .then((response)=>{
           this.theoryTest.unshift(response.data);
           useNotificationMessage('success','Uspešno kreiran test!')
@@ -47,7 +47,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
     async getTheoryTestApi(){
       await api
-        .get('/theory-test')
+        .get('/theory-test/')
         .then((response)=>{
           this.theoryTest = response.data;
         })
