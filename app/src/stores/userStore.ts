@@ -65,7 +65,7 @@ export const useUserStore = defineStore('userStore', {
 
     async deleteUser(id: string){
       await api
-        .delete('/user/'+id+'/')
+        .delete('/user/'+id)
         .then(()=>{
           const index = this.users.findIndex(el => el.id === id);
           if(index !== -1){
@@ -77,7 +77,7 @@ export const useUserStore = defineStore('userStore', {
 
     async deleteAvailability(id: string){
       await api
-        .delete('/availability/'+id+'/')
+        .delete('/availability/'+id)
         .then(()=>{
           // const index = this.userAvailability.findIndex(el => el.id === id);
           // if(index !== -1){
