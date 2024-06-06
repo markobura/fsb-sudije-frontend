@@ -143,18 +143,18 @@ const refereeType = ref(refereeTypeOptions[0]);
 
 const nameRules = [(name: string) => new Validator(name)
   .required('Ime korisnika je obavezno')
-  .stringMin(3, 'Ime korisnika mora imati barem 3 karaktera')
-  .stringMax(255, 'Ime korisnika može imati najviše 255 karaktera')
+  .stringMin(3, 'Ime mora imati barem 3 karaktera')
+  .stringMax(255, 'Ime može imati najviše 255 karaktera')
   .validate()]
 const surnameRules = [(surname: string) => new Validator(surname)
   .required('Prezime korisnika je obavezno')
-  .stringMin(3, 'Prezime korisnika mora imati barem 3 karaktera')
-  .stringMax(255, 'Prezime korisnika može imati najviše 255 karaktera')
+  .stringMin(3, 'Prezime mora imati barem 3 karaktera')
+  .stringMax(255, 'Prezime može imati najviše 255 karaktera')
   .validate()]
 const emailRules = [(email: string) => new Validator(email)
   .required('E-mail korisnika je obavezan')
-  .stringMin(3, 'E-mail korisnika mora imati barem 3 karaktera')
-  .stringMax(255, 'E-mail korisnika može imati najviše 255 karaktera')
+  .stringMin(3, 'E-mail  mora imati barem 3 karaktera')
+  .stringMax(255, 'E-mail  može imati najviše 255 karaktera')
   .email('Nevalidna e-mail adresa')
   .validate()];
 
