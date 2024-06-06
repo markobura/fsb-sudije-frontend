@@ -38,7 +38,7 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       formData.append('new_password', changePasswordRequest.new_password);
       const url = `/user/change-password`
       await api
-        .patch(url,{formData})
+        .patch(url,formData)
         .then((response)=>{
           console.log(response)
           useNotificationMessage('success','Uspešno promenjena lozinka!')
