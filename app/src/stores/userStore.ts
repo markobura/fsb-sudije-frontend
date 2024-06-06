@@ -56,7 +56,7 @@ export const useUserStore = defineStore('userStore', {
 
     async changePassword(changePasswordRequest: {user_id: string, new_password: string}){
       await api
-        .patch('/user/change-user-password/',changePasswordRequest)
+        .patch('/user/change-user-password',changePasswordRequest)
         .then((response)=>{
           console.log(response)
           useNotificationMessage('success','Uspešno promenjena lozinka!')
