@@ -80,7 +80,7 @@
                 label="Lozinka*"
                 hint="Unesite lozinku"
                 v-model.trim="password"
-                :rules="[ val => val && val.length > 8 || 'Ovo polje mora imati minimum 8 karaktera!']"
+                :rules="[ val => val && val.length > 5 || 'Ovo polje mora imati minimum 5 karaktera!']"
                 :type="isPwd ? 'password' : 'text'"
               >
                 <template v-slot:append >

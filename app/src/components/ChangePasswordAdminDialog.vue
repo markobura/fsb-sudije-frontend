@@ -17,7 +17,7 @@
             label='Nova lozinka'
             hint='Unesite novu lozinku'
             :password-input="true"
-            :rules="[ val => val && val.length >= 8 || 'Ovo polje je obavezno i mora imati najmanje 8 karaktera!']"
+            :rules="[ val => val && val.length >= 5 || 'Ovo polje je obavezno i mora imati najmanje 5 karaktera!']"
             :type="passwordInputType"
             @toggle-password="isPwd = !isPwd"
             style="margin-bottom: 30px"
