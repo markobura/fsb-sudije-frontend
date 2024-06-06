@@ -5,6 +5,7 @@ import {
 } from 'src/interfaces/user';
 import useNotificationMessage from "src/composables/notificationMessage";
 import {api} from "boot/axios";
+import {error} from "echarts/types/src/util/log";
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
@@ -41,8 +42,9 @@ export const useUserStore = defineStore('userStore', {
 
     },
     async updateUser(request: StoreRequest){
+      console.log(request)
       await api
-        .patch('/user/'+request.id+'/', request)
+        .patch('/user/'+request.id, request)
         .then((response)=>{
           const index = this.users.findIndex(el => el.id === request.id);
           if(index !== -1){
