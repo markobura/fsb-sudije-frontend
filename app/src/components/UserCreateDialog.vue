@@ -173,7 +173,6 @@ if(props.user){
 }
 
 async function storeUser(){
-  console.log(props.mode)
 
   if(props.mode === 'create'){
 

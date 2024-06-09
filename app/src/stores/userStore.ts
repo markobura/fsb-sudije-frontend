@@ -36,13 +36,14 @@ export const useUserStore = defineStore('userStore', {
       await api
         .post('/user/', request)
         .then((response)=>{
-          this.users.unshift(response.data);
+          if(request.role === 'USER'){
+            this.users.unshift(response.data);
+          }
           useNotificationMessage('success','Uspešno kreiran korisnik!')
         })
 
     },
     async updateUser(request: StoreRequest){
-      console.log(request)
       await api
         .patch('/user/'+request.id, request)
         .then((response)=>{
@@ -58,7 +59,6 @@ export const useUserStore = defineStore('userStore', {
       await api
         .patch('/user/change-user-password',changePasswordRequest)
         .then((response)=>{
-          console.log(response)
           useNotificationMessage('success','Uspešno promenjena lozinka!')
         })
     },

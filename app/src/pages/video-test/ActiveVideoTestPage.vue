@@ -88,11 +88,9 @@ const activeTestExist = computed(()=>{
 
 
 async function getActiveTest(){
-  console.log('video')
   await videoTestStore.getActiveVideoTestApi();
   questions.value = videoTestStore.getActiveVideoTest.questions;
   questions.value = shuffleArray(questions.value)
-  console.log(questions.value)
 }
 getActiveTest();
 
@@ -172,7 +170,6 @@ function nextStep(index: number){
       },
       cancel: true
     }).onOk((data) => {
-      console.log(data)
       if(data.includes('1')){
         showConfirmationDialog.value = false;
       }
@@ -204,8 +201,6 @@ async function submit(){
       testAnswers.push({answer: question.answers[index].answer_text})
     }
   })
-
-  console.log(testAnswers)
 
   await videoTestStore.submitVideoTest(testAnswers);
   await router.push({

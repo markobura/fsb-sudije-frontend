@@ -159,15 +159,16 @@ if(route.params.id){
 }
 
 async function showTest(){
-  console.log('cap')
   const test =  await theoryTestStore.showTest(String(route.params.id));
   if(test){
     date.value = useUIFormat(test.start_date.substring(0,10))
     const timeZone = new Date().getTimezoneOffset() / 60;
-    const startTimeHours = Number(test.start_date.substring(11,13)) - timeZone
-    const endTimeHours = Number(test.end_date.substring(11,13)) - timeZone
+    const startTimeHours = Number(test.start_date.substring(11,13)) - timeZone < 10 ?
+      '0'+(Number(test.start_date.substring(11,13)) - timeZone) : Number(test.start_date.substring(11,13)) - timeZone
+    const endTimeHours = Number(test.end_date.substring(11,13)) - timeZone < 10 ?
+      '0'+(Number(test.end_date.substring(11,13)) - timeZone) : Number(test.end_date.substring(11,13)) - timeZone
     startTime.value = startTimeHours+':'+test.start_date.substring(14,16)
-    endTime.value = endTimeHours+':'+test.start_date.substring(14,16)
+    endTime.value = endTimeHours+':'+test.end_date.substring(14,16)
     league.value = test.league
     refereeType.value = test.role
     questions.value = test.theory_questions
@@ -237,8 +238,6 @@ async function submit(){
     theory_questions: [...questions.value]
   }
 
-  console.log(request.theory_questions)
-
   request.theory_questions.forEach(el => {
     for (let i = el.answers.length - 1; i >= 0; i--) {
       const answer = el.answers[i];
@@ -247,8 +246,6 @@ async function submit(){
       }
     }
   });
-  console.log(request.theory_questions)
-
 
   if(route.params.id){
     await theoryTestStore.updateTheoryTest(String(route.params.id),request);

@@ -81,7 +81,6 @@ const activeTestExist = computed(()=>{
 async function getActiveTest(){
   await theoryTestStore.getActiveTestApi();
   questions.value = theoryTestStore.getActiveTest.theory_questions;
-  console.log(questions.value)
 }
 getActiveTest();
 
@@ -118,8 +117,6 @@ async function submit(){
       testAnswers.push({answer: question.answers[index].answer_text})
     }
   })
-
-  console.log(testAnswers)
 
   submitTest(testAnswers);
 }
