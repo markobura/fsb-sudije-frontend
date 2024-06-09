@@ -19,19 +19,6 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       const formData = new FormData();
       formData.append('username', request.username);
       formData.append('password', request.password);
-      formData.append('grant_type', '');
-      formData.append('scope', '');
-      formData.append('client_id', '');
-      formData.append('client_secret', '');
-
-      const loginRequest = {
-        username: request.username,
-        password: request.password,
-        grant_type: '',
-        scope: '',
-        client_id: '',
-        client_secret: ''
-      }
 
       await api
         .post('/auth/token', formData)
