@@ -14,7 +14,6 @@ export default function auth ({ next }) {
     })
   }
 
-  console.log(userSessionTokenExists)
   const attemptAutoLogin = async () => {
     const shouldAutoLogin = await useAttemptAutoLogin();
     if(shouldAutoLogin){

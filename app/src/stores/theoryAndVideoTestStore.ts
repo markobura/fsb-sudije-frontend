@@ -112,7 +112,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         if (error instanceof Error) {
           console.error('Greška prilikom dobijanja aktivnog testa:', error);
         } else {
-          console.log('Test nije pronađen.');
           this.activeTestExist = false;
         }
       }
@@ -124,7 +123,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       console.log(currentTime)
       try {
         const response = await api.get('/video-test/get-active-video-test');
-        console.log(response.data)
         this.activeVideoTest = response.data;
         this.activeVideoTest['questions'] = this.activeVideoTest.answers.map((el:VideoTestAnswers) => {
           return {
@@ -144,7 +142,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
         this.activeVideoTestExist = true;
       }catch (error: any) {
         if (error.response && error.response.status === 404) {
-          console.log('Test nije pronađen.');
           this.activeVideoTestExist = false;
         } else {
           console.error('Greška prilikom dobijanja aktivnog testa:', error);
@@ -204,23 +201,18 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
     },
 
     async downloadExcelVideoTest(id: string){
-
       try {
-        // const response = await api.get('/theory-test/export-results/'+id);
-        // useNotificationMessage('success', response.data.message)
         const url ='/video-test/export-results/'+id;
         await useDownloadExcel(url, {}, 'rezultati-video-test');
 
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
-          console.log(error.response)
           useNotificationMessage('error','Nema rezultata za ovaj video test!')
         }
       }
     },
 
     async getVideoTestApi(){
-      console.log('video')
       await api
         .get('/video-test/')
         .then((response)=>{

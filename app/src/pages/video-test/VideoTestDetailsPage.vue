@@ -186,19 +186,13 @@ async function saveQuestion(){
 
     await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'store');
 
-    console.log(answers.value)
-
       for (let i = answers.value.length - 1; i >= 0; i--) {
         const answer = answers.value[i];
         if (!answer.is_correct && answer.answer_text === '') {
           answers.value.splice(i, 1);
         }
       }
-    console.log(answers.value)
-
     await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value, 'store');
-
-
     addVideoDialogIsVisible.value = false
   }else{
    await updateQuestion()
@@ -230,16 +224,12 @@ async function updateQuestion(){
     await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'update');
   }
 
-  console.log(answers.value)
-
-
   for (let i = answers.value.length - 1; i >= 0; i--) {
     const answer = answers.value[i];
     if (!answer.is_correct && answer.answer_text === '') {
       answers.value.splice(i, 1);
     }
   }
-  console.log(answers.value)
 
   await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value,  'update');
 

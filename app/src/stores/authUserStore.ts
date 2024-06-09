@@ -23,7 +23,6 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
       await api
         .post('/auth/token', formData)
         .then((response)=>{
-          console.log(response)
           this.setUserData(response.data.user);
           this.token = response.data.access_token;
           this.setUserCookie(response.data.access_token, response.data.user.email);
@@ -33,14 +32,10 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
     },
 
     async changePassword(changePasswordRequest: {old_password: string, new_password: string}){
-      // const formData = new FormData();
-      // formData.append('old_password', changePasswordRequest.old_password);
-      // formData.append('new_password', changePasswordRequest.new_password);
       const url = `/user/change-password`
       await api
         .patch(url,{old_password:changePasswordRequest.old_password, new_password: changePasswordRequest.new_password})
-        .then((response)=>{
-          console.log(response)
+        .then(()=>{
           useNotificationMessage('success','Uspešno promenjena lozinka!')
         })
     },
@@ -51,13 +46,9 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
 
     async autoLogin() {
       let redirectToRoute = '';
-
-      const email = Cookies.get('email');
-      console.log(email)
       await api
         .get('/user/me')
         .then((response) => {
-          console.log(response)
           const userSessionFound = response.data;
 
           if (userSessionFound) {
@@ -76,10 +67,6 @@ export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
 
     setUserData(user: User) {
       this.user = user;
-    },
-
-    setUserToken(token: string) {
-      this.token = token;
     },
 
     async setUserCookie(userSessionToken: string, email: string) {

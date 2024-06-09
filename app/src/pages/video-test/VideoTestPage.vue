@@ -220,12 +220,16 @@ function openUpdateVideoTestDialog(test: any){
   updateTestId.value = test.id
   date.value = useUIFormat(test.start_date.substring(0,10));
   const timeZone = new Date().getTimezoneOffset() / 60;
-  const startTimeHours = Number(test.start_date.substring(11,13)) - timeZone
-  const endTimeHours = Number(test.end_date.substring(11,13)) - timeZone
+  const startTimeHours = Number(test.start_date.substring(11,13)) - timeZone < 10 ?
+    '0'+(Number(test.start_date.substring(11,13)) - timeZone) : Number(test.start_date.substring(11,13)) - timeZone
+  const endTimeHours = Number(test.end_date.substring(11,13)) - timeZone < 10 ?
+    '0'+(Number(test.end_date.substring(11,13)) - timeZone) : Number(test.end_date.substring(11,13)) - timeZone
   startTime.value = startTimeHours+':'+test.start_date.substring(14,16)
-  endTime.value = endTimeHours+':'+test.start_date.substring(14,16)
+  endTime.value = endTimeHours+':'+test.end_date.substring(14,16)
   league.value = test.league
   refereeType.value = test.role
+
+
 }
 async function createVideoTest(){
 
