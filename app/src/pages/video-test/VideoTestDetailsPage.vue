@@ -1,16 +1,18 @@
 <template>
 <q-page padding>
     <q-card>
-      <q-card-section>
-      <q-item style="display: flex; justify-content: space-between">
+      <q-card-section style="display: flex; justify-content: space-between; align-items: center" >
+      <q-item >
           <q-item-section avatar>
             <q-icon name="play_circle" size="30px"/>
           </q-item-section>
           <q-item-section>
             <q-item-label class="text-h5">{{ videoTest.name }}</q-item-label>
           </q-item-section>
-          <q-btn dense round class="bg-green text-white" icon="add" @click="openAddVideoDialog"></q-btn>
       </q-item>
+        <q-btn dense round class="bg-green text-white" icon="add" @click="openAddVideoDialog">
+          <BaseTooltip class="bg-green" tooltip="Dodaj novo pitanje"/>
+        </q-btn>
       </q-card-section>
       <q-separator inset style="margin-bottom: 10px"/>
       <div class="q-pa-md">
@@ -98,6 +100,7 @@ import {useRoute} from "vue-router";
 import {useTheoryAndVideoTestStore} from "stores/theoryAndVideoTestStore";
 import useNotificationMessage from "src/composables/notificationMessage";
 import {computed, ref} from "vue";
+import BaseTooltip from 'src/components/BaseTooltip.vue'
 
 const videoTestStore = useTheoryAndVideoTestStore();
 const route = useRoute();
