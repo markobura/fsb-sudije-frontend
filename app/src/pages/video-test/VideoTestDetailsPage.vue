@@ -1,9 +1,16 @@
 <template>
 <q-page padding>
     <q-card>
-      <q-card-section style="display: flex; justify-content: space-between">
-        <BaseHeader icon="play_circle" :title="videoTest.name"></BaseHeader>
-        <q-btn dense rounded class="bg-green text-white" label="Dodaj pitanje" @click="openAddVideoDialog"></q-btn>
+      <q-card-section>
+      <q-item style="display: flex; justify-content: space-between">
+          <q-item-section avatar>
+            <q-icon name="play_circle" size="30px"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="text-h5">{{ videoTest.name }}</q-item-label>
+          </q-item-section>
+          <q-btn dense round class="bg-green text-white" icon="add" @click="openAddVideoDialog"></q-btn>
+      </q-item>
       </q-card-section>
       <q-separator inset style="margin-bottom: 10px"/>
       <div class="q-pa-md">
