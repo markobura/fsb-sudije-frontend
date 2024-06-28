@@ -52,12 +52,15 @@
     </q-card>
     <q-dialog full-width persistent v-model="addVideoDialogIsVisible" v-if="addVideoDialogIsVisible">
     <q-card>
-      <q-card-section class="bg-blue-grey-8 text-white my-header">
-        <BaseHeader  icon="play_circle"  :title="dialogTitle">
-          <q-btn style="margin-left: 10px" v-close-popup icon="close" color="white" flat round></q-btn>
-        </BaseHeader>
+      <q-card-section class="bg-blue-grey-8 text-white"  style="display: flex; justify-content: space-between; align-items: center">
+        <q-item>
+          <q-item-section>
+            <q-item-label class="text-h5">{{ dialogTitle }}</q-item-label>
+          </q-item-section>
+        </q-item>
+            <q-btn style="margin-left: 10px" v-close-popup icon="close" color="white" flat round></q-btn>
       </q-card-section>
-      <q-card-section style="width: 350px; margin-left: 15px">
+      <q-card-section style="max-width: 400px; margin: 15px">
         <q-file dense outlined color="primary" filled v-model="video"
                 hint="Uploaduj video sa svog uređaja" accept=".mp4">
           <template v-slot:append>
