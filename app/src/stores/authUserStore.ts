@@ -3,6 +3,7 @@ import {User} from "src/interfaces/user";
 import useNotificationMessage from "src/composables/notificationMessage";
 import {Cookies} from "quasar";
 import {api} from "boot/axios";
+import useRedirect from "src/composables/redirect";
 
 export const useAuthenticatedUserStore = defineStore('authenticatedUserStore', {
   state: () => ({

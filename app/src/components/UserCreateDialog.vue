@@ -56,7 +56,7 @@
               <q-input   style="margin-bottom: 10px" filled v-model="dateOfBirth" hint="Izaberite datum rođenja"  readonly>
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer" color="primary"
-
+                  :disabled="props.mode !== 'user'"
                   >
                     <q-popup-proxy  cover transition-show="scale" transition-hide="scale" >
                       <q-date v-if="props.mode !== 'user'" v-model="dateOfBirth" mask="DD.MM.YYYY"  no-unset default-view="Years">
