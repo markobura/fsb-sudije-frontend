@@ -161,7 +161,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       try {
         const response = await api.post('/theory-test/submit-theory-test', request);
         useNotificationMessage('success', response.data.message)
-        this.activeTestExist = false;
       } catch (error: any) {
         if (error.response && error.response.status === 409) {
           useNotificationMessage('error',error.response.data.detail)
@@ -195,7 +194,7 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
-          useNotificationMessage('error','Nema rezultata za ovaj video test!')
+          useNotificationMessage('error','Nema rezultata za ovaj test!')
         }
       }
     },

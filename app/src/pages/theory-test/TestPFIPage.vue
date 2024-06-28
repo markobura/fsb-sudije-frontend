@@ -151,8 +151,7 @@ function submitTest(testAnswers: { answer: string }[]){
     await router.push({
       name: 'home'
     })
-    location.reload();
-
+    theoryTestStore.activeTestExist = false;
   })
 }
 
