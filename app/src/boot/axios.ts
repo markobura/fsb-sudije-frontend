@@ -19,8 +19,11 @@ declare module '@vue/runtime-core' {
 // for each client)
 const api = axios.create({ baseURL: process.env.BACKEND_APP_BASE_URL });
 
+let url;
+
 api.interceptors.request.use((config)=>{
   Loading.show();
+  url = config.url;
   if(useRouteRequiresAuth(`${config.url}`)){
     config.headers['Authorization'] = `Bearer ${Cookies.get('userSessionToken')}`
   }
@@ -34,12 +37,17 @@ api.interceptors.response.use((response)=>{
   return response;
 }, (error)=>{
 
+
   Loading.hide();
+
   if(useHandleErrors(error.response.status, error.response.data.errors)){
-    const authUserStore = useAuthenticatedUserStore();
-    authUserStore.revokeSession().then(()=>{
-      window.location.replace('/auth/login');
-    });
+    if(url !== '/auth/token'){
+      const authUserStore = useAuthenticatedUserStore();
+      authUserStore.revokeSession().then(()=>{
+        window.location.replace('/auth/login');
+      });
+    }
+
   }
   return Promise.reject(error);
 })

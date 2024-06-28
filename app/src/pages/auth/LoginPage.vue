@@ -86,7 +86,7 @@ async function onSubmit(){
   }
 
    await userStore.login(requestObject);
-  useRedirect(router,'home','replace');
+   useRedirect(router,'home','replace');
 }
 
 </script>
