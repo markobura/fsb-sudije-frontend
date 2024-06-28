@@ -62,7 +62,7 @@
       </q-card-section>
       <q-card-section style="max-width: 400px; margin: 15px">
         <q-file dense outlined color="primary" filled v-model="video"
-                hint="Uploaduj video sa svog uređaja" accept=".mp4 .mov">
+                hint="Uploaduj video sa svog uređaja" accept=".mp4, .mov">
           <template v-slot:append>
             <q-icon name="cloud_upload" color="primary"/>
           </template>
