@@ -267,7 +267,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
              this.videoTest.urls[index] =  response.data
            }
           }
-          useNotificationMessage('success','Uspešno sačuvano pitanje!')
         })
 
     },

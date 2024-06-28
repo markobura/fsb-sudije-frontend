@@ -1,6 +1,6 @@
 export default function useRouteRequiresAuth(requestUrl: string) {
   const noAuthRoutes = {
-    Login: '/auth/login',
+    Login: '/auth/token',
     ActivateAccount: '/auth/activate-account',
     ResetPassword: '/auth/reset-password',
     ForgotPassword: '/auth/forgot-password',
