@@ -20,9 +20,9 @@
 <!--            <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="image">-->
 <!--              <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>-->
 <!--            </q-btn>-->
-<!--            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">-->
-<!--              <BaseTooltip class="bg-teal-9" tooltip="Dostupnost"/>-->
-<!--            </q-btn>-->
+            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">
+              <BaseTooltip class="bg-teal-9" tooltip="Dostupnost"/>
+            </q-btn>
           </div>
         </q-card-section>
         <q-separator inset/>

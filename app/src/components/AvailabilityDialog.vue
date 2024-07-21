@@ -92,76 +92,95 @@
               <q-btn flat round icon="close" v-close-popup color="white"/>
             </q-item>
           </q-card-section>
-          <q-form @submit="addAvailability">
-          <q-card-section  style="min-width: 300px" >
-<!--            <date-range-filter-->
-<!--              hint="Izaberite period nedostupnosti"-->
-<!--              :date-range-variable-names="dateRangeVariableNames"-->
-<!--              @set-date="setDate"-->
-<!--              ref="transactionPeriod"-->
-<!--            />-->
-            <q-input outlined v-model="dateUnavailable" hint="Izaberite datum nedostupnosti"  readonly>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer" color="primary">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale" >
-                    <q-date v-model="dateUnavailable" mask="DD.MM.YYYY"  no-unset :options="optionsFn" :events="events" :event-color="'red'">
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Ok" color="primary" flat/>
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
+            <q-stepper
+              v-model="step"
+              ref="stepper"
+              alternative-labels
+              color="primary"
+              animated
+            >
+              <q-step
+                :name="1"
+                title="Datumi nedostupnosti"
+                icon="date"
+                :done="step > 1"
+              >
+                <q-date v-model="daysUnavailable"
+                        multiple
+                        mask="DD.MM.YYYY"
+                        :options="optionsFn"
+                        :events="events" :event-color="'red'"
+                >
+                </q-date>
+              </q-step>
+
+              <q-step
+                :name="2"
+                title="Vreme i razlog"
+                icon="schedule"
+                :done="step > 2"
+              >
+
+                <q-markup-table dense>
+                  <thead>
+                  <tr class="table-captions bg-primary text-white">
+                    <th class="text-left">Datum</th>
+                    <th class="text-center">Od</th>
+                    <th class="text-center">Do</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="(date,index) in unavailableDatesAndTimes" :key="date.date" :class="index % 2 === 0 ? 'bg-blue-grey-1':''">
+                    <td class="text-left">{{date.date}}</td>
+                    <td class="text-center">
+                      <q-input style="width: 90px" outlined v-model="date.startTime" mask="time" readonly dense>
+                        <template v-slot:append>
+                          <q-icon name="access_time" class="cursor-pointer" color="green">
+                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                              <q-time v-model="date.startTime">
+                                <div class="row items-center justify-end">
+                                  <q-btn v-close-popup label="Ok" color="primary" flat />
+                                </div>
+                              </q-time>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </td>
+                    <td class="text-center">
+                      <q-input style="width: 90px" outlined v-model="date.endTime" mask="time" readonly dense>
+                        <template v-slot:append>
+                          <q-icon name="access_time" class="cursor-pointer" color="red">
+                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                              <q-time v-model="date.endTime">
+                                <div class="row items-center justify-end">
+                                  <q-btn v-close-popup label="Ok" color="primary" flat />
+                                </div>
+                              </q-time>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </td>
+                  </tr>
+                  </tbody>
+                </q-markup-table>
+                <q-input
+                  style="margin-top: 20px"
+                  v-model="reason"
+                  filled
+                  type="textarea"
+                  label="Razlog..."
+                />
+              </q-step>
+              <template v-slot:navigation>
+                <q-stepper-navigation style="display:flex; justify-content: space-between">
+                  <q-btn rounded outline v-if="step > 1"  color="primary" @click="$refs.stepper.previous()" label="Nazad" class="q-ml-sm" />
+                  <q-btn v-if="step === 1" rounded @click="setTimeList" color="primary" label="Dalje" />
+                  <q-btn v-else rounded @click="addAvailability" color="secondary" label="Snimi" />
+                </q-stepper-navigation>
               </template>
-            </q-input>
-          </q-card-section>
-          <q-card-section>
-            <q-checkbox v-model="wholeDay" label="Ceo dan" @update:model-value="setWholeDay" />
-          </q-card-section>
-          <q-card-section style="min-width: 300px" v-if="!wholeDay">
-              <q-input outlined v-model="startTime" mask="time" :rules="['time']" hint="Izaberite od kad ste nedostupni" readonly dense>
-                <template v-slot:append>
-                  <q-icon name="access_time" class="cursor-pointer" color="green">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-time v-model="startTime">
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Ok" color="primary" flat />
-                        </div>
-                      </q-time>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </q-card-section>
-            <q-card-section style="min-width: 300px" v-if="!wholeDay">
-              <q-input outlined v-model="endTime" mask="time" :rules="['time']" hint="Izaberite do kad ste nedostupni" readonly dense>
-                <template v-slot:append>
-                  <q-icon name="access_time" class="cursor-pointer" color="red">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-time v-model="endTime">
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Ok" color="primary" flat />
-                        </div>
-                      </q-time>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              v-model="reason"
-              label="Razlog"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-              dense
-              type="textarea"
-            />
-          </q-card-section>
-          <q-card-section>
-            <q-btn label="Dodaj" rounded class="bg-green text-white" type="submit"></q-btn>
-          </q-card-section>
-          </q-form>
+            </q-stepper>
         </q-card>
       </q-dialog>
     </q-card>
@@ -213,10 +232,10 @@ function deleteAvailability(id: string){
   })
 }
 
-const dateUnavailable = ref(useCurrentDate())
+const daysUnavailable = ref()
 function optionsFn (calendarDate: string) {
   const today = useDBFormat(useCurrentDate()).replace(/\-/g, "/");
-  const newDate = date.addToDate(new Date(), { days: 10 });
+  const newDate = date.addToDate(new Date(), { days: 14 });
   const tenDaysAfterToday = useDBFormat(date.formatDate(newDate,'DD.MM.YYYY')).replace(/\-/g, "/");
   console.log(tenDaysAfterToday)
 
@@ -242,14 +261,7 @@ const events = ref<string[]>([])
 const startTime = ref('00:00')
 const endTime = ref('23:59')
 
-const wholeDay = ref(true)
 
-function setWholeDay(){
-  if(wholeDay.value){
-    startTime.value = '00:00'
-    endTime.value = '23:59'
-  }
-}
 
 const reason = ref('')
 
@@ -261,20 +273,11 @@ async function addAvailability(){
     return;
   }
 
-  availability.value.push({
-    period: dateUnavailable.value,
-    time: startTime.value + ' - ' + endTime.value,
-    reason: reason.value
-  })
 
-  events.value.push((useDBFormat(dateUnavailable.value)).replace(/\-/g, "/"));
+
 
 
   dialog.value.hide();
-  wholeDay.value = true
-  dateUnavailable.value = useCurrentDate()
-  startTime.value = '00:00'
-  endTime.value = '23:59'
   reason.value = ''
 
 }
@@ -288,6 +291,35 @@ const buttonsAreDisabled = computed(()=>{
   //   return true;
 })
 
+const step = ref(1)
+
+interface UnavailableDateTime {
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+const unavailableDatesAndTimes = ref<UnavailableDateTime[]>([]);
+
+function setTimeList(){
+  console.log(daysUnavailable.value)
+
+  unavailableDatesAndTimes.value = daysUnavailable.value.map((el: string)=>{
+    return {
+      date: el,
+      startTime: '00:00',
+      endTime: '23:59'
+    }
+  }).sort((a: UnavailableDateTime, b: UnavailableDateTime) => {
+    // Pretvaranje datuma iz "DD.MM.YYYY" u "YYYY-MM-DD" format za poređenje
+    const dateA = a.date.split('.').reverse().join('-');
+    const dateB = b.date.split('.').reverse().join('-');
+    return new Date(dateA).getTime() - new Date(dateB).getTime();
+  });
+
+
+
+  step.value = 2
+}
 
 </script>
 
