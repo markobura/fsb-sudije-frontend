@@ -85,33 +85,36 @@
       <q-dialog v-model="createAvailabilityDialogIsVisible" v-if="createAvailabilityDialogIsVisible" ref="dialog">
         <q-card>
           <q-card-section class="bg-primary text-white text-h6">
-            <q-item style="display: flex; justify-content: space-between">
-              <q-item-section avatar class="text-white" style="margin-top: 5px">
-                <q-icon name="event_busy" size="lg"/>
+            <q-item style="display: flex; justify-content: space-between" dense>
+              <q-item-section avatar class="text-white">
+                <q-icon name="event_busy" size="md"/>
               </q-item-section>
               <q-btn flat round icon="close" v-close-popup color="white"/>
             </q-item>
           </q-card-section>
+          <q-card-section class="no-padding">
             <q-stepper
               v-model="step"
               ref="stepper"
-              alternative-labels
               color="primary"
               animated
+              class="stepper-background"
             >
               <q-step
                 :name="1"
-                title="Datumi nedostupnosti"
+                title="Datumi"
                 icon="date"
                 :done="step > 1"
               >
+                <div class="full-width-height no-margin" style="background-color: pink">
                 <q-date v-model="daysUnavailable"
                         multiple
                         mask="DD.MM.YYYY"
                         :options="optionsFn"
+                        class="no-margin no-padding full-width-height"
                         :events="events" :event-color="'red'"
-                >
-                </q-date>
+                ></q-date>
+                </div>
               </q-step>
 
               <q-step
@@ -133,7 +136,7 @@
                   <tr v-for="(date,index) in unavailableDatesAndTimes" :key="date.date" :class="index % 2 === 0 ? 'bg-blue-grey-1':''">
                     <td class="text-left">{{date.date}}</td>
                     <td class="text-center">
-                      <q-input style="width: 90px" outlined v-model="date.startTime" mask="time" readonly dense>
+                      <q-input style="width: 89px" outlined v-model="date.startTime" mask="time" readonly dense>
                         <template v-slot:append>
                           <q-icon name="access_time" class="cursor-pointer" color="green">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -148,7 +151,7 @@
                       </q-input>
                     </td>
                     <td class="text-center">
-                      <q-input style="width: 90px" outlined v-model="date.endTime" mask="time" readonly dense>
+                      <q-input style="width: 89px" outlined v-model="date.endTime" mask="time" readonly dense>
                         <template v-slot:append>
                           <q-icon name="access_time" class="cursor-pointer" color="red">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -177,10 +180,12 @@
                 <q-stepper-navigation style="display:flex; justify-content: space-between">
                   <q-btn rounded outline v-if="step > 1"  color="primary" @click="$refs.stepper.previous()" label="Nazad" class="q-ml-sm" />
                   <q-btn v-if="step === 1" rounded @click="setTimeList" color="primary" label="Dalje" />
-                  <q-btn v-else rounded @click="addAvailability" color="secondary" label="Snimi" />
+                  <q-btn v-else rounded @click="addAvailability" color="green" label="Snimi" />
                 </q-stepper-navigation>
               </template>
             </q-stepper>
+
+          </q-card-section>
         </q-card>
       </q-dialog>
     </q-card>
@@ -325,4 +330,16 @@ function setTimeList(){
 
 <style scoped>
 
+.stepper-background >>> .q-stepper__tab:first-child {
+  padding-left: 10px;
+}
+
+.stepper-background >>> .q-stepper__tab:last-child {
+  padding-right: 10px;
+}
+
+.stepper-background >>> .q-stepper__step-inner,
+.stepper-background >>> .q-stepper__nav {
+  padding: 10px;
+}
 </style>
