@@ -1,23 +1,22 @@
 <template>
   <q-dialog full-width>
-    <q-card>
+    <q-card >
       <q-card-section class="bg-blue-grey-7 text-white text-h6">
         <q-item style="display: flex; justify-content: space-between">
-          <q-item-label class="text-h5 text-white" style="margin-top: 5px">Dostupnost</q-item-label>
+          <q-item-label class="text-h5 text-white" style="margin-top: 5px">Nedostupnost</q-item-label>
           <q-btn flat round icon="close" v-close-popup color="white"/>
         </q-item>
       </q-card-section>
       <q-card-section>
-        <q-table :rows="availability" :columns="columns" row-key="name" dense>
+        <q-table :rows="userUnavailability" :columns="columns" row-key="name" dense>
           <template v-slot:top-left>
             <q-btn
-
               round
               color="green"
               icon="add"
               @click="openAvailabilityDialog('create')"
             >
-              <BaseTooltip class="bg-green" tooltip="Dodaj novu dostupnost"/>
+              <BaseTooltip class="bg-green" tooltip="Dodaj novu nedostupnost"/>
             </q-btn>
           </template>
           <template v-slot:header="props">
@@ -33,11 +32,11 @@
           </template>
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="period" :props="props">
-                <span>{{props.row.period}}</span>
+              <q-td key="date" :props="props">
+                <span>{{useUIFormat(props.row.date)}}</span>
               </q-td>
               <q-td key="time" :props="props">
-                <span>{{props.row.time === '00:00 - 23:59' ? 'Ceo dan' : props.row.time}}</span>
+                <span>{{props.row.start_time + ' - ' + props.row.end_time}}</span>
               </q-td>
               <q-td key="reason" :props="props">
                 <span>
@@ -54,25 +53,23 @@
                 </span>
 
               </q-td>
-              <q-td key="update" :props="props">
-                <q-btn
-                  round
-                  type="button"
-                  flat
-                  @click="openAvailabilityDialog('update')"
-                  :disable="buttonsAreDisabled"
-                >
-                  <q-icon name="edit" color="orange"/>
-                  <BaseTooltip class="bg-orange" tooltip="Ažuriraj"/>
-                </q-btn>
-              </q-td>
+<!--              <q-td key="update" :props="props">-->
+<!--                <q-btn-->
+<!--                  round-->
+<!--                  type="button"-->
+<!--                  flat-->
+<!--                  @click="openAvailabilityDialog('update')"-->
+<!--                >-->
+<!--                  <q-icon name="edit" color="orange"/>-->
+<!--                  <BaseTooltip class="bg-orange" tooltip="Ažuriraj"/>-->
+<!--                </q-btn>-->
+<!--              </q-td>-->
               <q-td key="delete" :props="props"  class="text-center">
                 <q-btn
                   round
                   type="button"
                   flat
                   @click="deleteAvailability(props.row.id)"
-                  :disable="buttonsAreDisabled"
                 >
                   <q-icon name="delete" color="red"/>
                   <BaseTooltip class="bg-red" tooltip="Obriši"/>
@@ -106,13 +103,12 @@
                 icon="date"
                 :done="step > 1"
               >
-                <div class="full-width-height no-margin" style="background-color: pink">
+                <div class="full-width-height no-margin">
                 <q-date v-model="daysUnavailable"
                         multiple
                         mask="DD.MM.YYYY"
                         :options="optionsFn"
                         class="no-margin no-padding full-width-height"
-                        :events="events" :event-color="'red'"
                 ></q-date>
                 </div>
               </q-step>
@@ -198,7 +194,7 @@ import {useQuasar, date} from "quasar";
 import {useUserStore} from "stores/userStore";
 import {computed, ref} from "vue";
 import useUserAvailabilityTableColumns from "src/columns/userAvailabilityColumns";
-import {useCurrentDate, useDBFormat} from "src/utils/dateHook";
+import {useCurrentDate, useDBFormat, useUIFormat} from "src/utils/dateHook";
 import useNotificationMessage from "src/composables/notificationMessage";
 
 const $q = useQuasar();
@@ -206,15 +202,20 @@ const userStore = useUserStore();
 const dialog = ref()
 
 const columns = useUserAvailabilityTableColumns()
-// const availability = computed(()=>{
-//   return userStore.userAvailability;
-// })
 
-const availability = ref<any>([])
+const userUnavailability = computed(()=>{
+  return userStore.userUnavailability;
+})
+
+async function getUserUnavailability(){
+  await userStore.getUserUnavailabilitiesApi();
+}
+getUserUnavailability();
 
 const createAvailabilityDialogIsVisible = ref(false);
 
 function openAvailabilityDialog(mode: 'create'|'update'){
+
   if(mode === 'create'){
     createAvailabilityDialogIsVisible.value = true;
   }else{
@@ -224,7 +225,7 @@ function openAvailabilityDialog(mode: 'create'|'update'){
 
 function deleteAvailability(id: string){
   $q.dialog({
-    title: 'Brisanje dostupnosti',
+    title: 'Brisanje nedostupnosti',
     message: 'Da li ste sigurni da želite da obrišete ovu dostupnost?',
     persistent: true,
     ok: {
@@ -237,34 +238,20 @@ function deleteAvailability(id: string){
   })
 }
 
-const daysUnavailable = ref()
+const daysUnavailable = ref([])
 function optionsFn (calendarDate: string) {
   const today = useDBFormat(useCurrentDate()).replace(/\-/g, "/");
-  const newDate = date.addToDate(new Date(), { days: 14 });
-  const tenDaysAfterToday = useDBFormat(date.formatDate(newDate,'DD.MM.YYYY')).replace(/\-/g, "/");
-  console.log(tenDaysAfterToday)
+  const newDate = date.addToDate(new Date(), { days: 30 });
+  const thirtyDaysAfterToday = useDBFormat(date.formatDate(newDate,'DD.MM.YYYY')).replace(/\-/g, "/");
+  console.log(thirtyDaysAfterToday)
 
-  return calendarDate >= today && calendarDate <= tenDaysAfterToday
+  const events = userStore.getUserUnavailability.map(el => {
+    return (el.date).replaceAll('-','/')
+  })
+
+  return (calendarDate >= today && calendarDate <= thirtyDaysAfterToday ) && !events.includes(calendarDate)
 }
 
-const events = ref<string[]>([])
-// const startDate = ref();
-// const endDate = ref();
-//
-// const dateRangeVariableNames = {
-//   startDateName: "startDate",
-//   endDateName: "endDate"
-// };
-//
-// function setDate(dateObj: {startDateName: string, startDateValue: string, endDateName: string, endDateValue: string}) {
-//   if (dateObj.startDateName === "startDate") {
-//     startDate.value = dateObj.startDateValue;
-//     endDate.value = dateObj.endDateValue;
-//   }
-// }
-
-const startTime = ref('00:00')
-const endTime = ref('23:59')
 
 
 
@@ -272,29 +259,42 @@ const reason = ref('')
 
 async function addAvailability(){
 
+  const errorFound = unavailableDatesAndTimes.value.find((el)=>{
+    return el.startTime >= el.endTime
+  })
 
-  if(startTime.value >= endTime.value){
-    useNotificationMessage('error','Krajnje vreme nedostupnosti je mora biti veće od početnog!')
+  if(errorFound){
+    useNotificationMessage('error','Krajnje vreme nedostupnosti za datum '+errorFound.date+' je mora biti veće od početnog!')
     return;
   }
 
+  if(reason.value === ''){
+    useNotificationMessage('error','Morate uneti razlog!')
+    return;
+  }
 
+  const request = {
+    unavailabilities:
+      unavailableDatesAndTimes.value.map(el => {
+        return {
+          date: useDBFormat(el.date),
+          start_time: el.startTime,
+          end_time: el.endTime,
+          reason: reason.value
+        }
+    })
+  }
 
-
+  await userStore.addUnavailability(request);
 
   dialog.value.hide();
+  step.value = 1;
+  unavailableDatesAndTimes.value = []
+  daysUnavailable.value = []
   reason.value = ''
 
 }
 
-const buttonsAreDisabled = computed(()=>{
-  let today = new Date();
-  let day = today.getDay();
-  let hour = today.getHours()
-
-  return !(day === 1 || (day === 2 && hour < 16));
-  //   return true;
-})
 
 const step = ref(1)
 
@@ -308,6 +308,11 @@ const unavailableDatesAndTimes = ref<UnavailableDateTime[]>([]);
 function setTimeList(){
   console.log(daysUnavailable.value)
 
+  if(!daysUnavailable.value || daysUnavailable.value.length === 0){
+    useNotificationMessage('error','Morate izabrati barem jedan datum!')
+    return
+  }
+
   unavailableDatesAndTimes.value = daysUnavailable.value.map((el: string)=>{
     return {
       date: el,
@@ -320,8 +325,6 @@ function setTimeList(){
     const dateB = b.date.split('.').reverse().join('-');
     return new Date(dateA).getTime() - new Date(dateB).getTime();
   });
-
-
 
   step.value = 2
 }
