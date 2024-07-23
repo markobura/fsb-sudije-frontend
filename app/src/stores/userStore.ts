@@ -87,12 +87,17 @@ export const useUserStore = defineStore('userStore', {
         })
     },
 
-    async getUserUnavailabilitiesApi(){
-      await api
-        .get('/unavailability/', )
-        .then((response) => {
-          this.userUnavailability = response.data;
-        })
+    async getUserUnavailabilitiesApi() {
+      try {
+        const response = await api.get('/unavailability/');
+        this.userUnavailability = response.data;
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          this.userUnavailability = [];
+        } else {
+          console.error(error);
+        }
+      }
     },
 
     async deleteAvailability(id: string){
