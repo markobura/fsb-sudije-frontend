@@ -5,19 +5,20 @@ import {
 } from 'src/interfaces/user';
 import useNotificationMessage from "src/composables/notificationMessage";
 import {api} from "boot/axios";
-import {error} from "echarts/types/src/util/log";
+import useDownloadExcel from "src/composables/downloadExcelApi";
+import {useCurrentDate} from "src/utils/dateHook";
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
     userDetails: {} as User,
     users: [] as User[],
-    // userAvailability: [] as any[],
+    userUnavailability: [] as {id: string, user_id: string, date: string, start_time: string, end_time: string, reason: string}[],
     // availabilities: [] as any[]
   }),
   getters: {
     getUsers: (state) => state.users,
     getUserDetails: (state) => state.userDetails,
-    // getUserAvailability: (state) => state.userAvailability,
+    getUserUnavailability: (state) => state.userUnavailability,
     // getAvailabilities: (state) => state.availabilities
   },
   actions: {
@@ -75,18 +76,48 @@ export const useUserStore = defineStore('userStore', {
         })
     },
 
+    async addUnavailability(request: any){
+      await api
+        .post('/unavailability/', request)
+        .then((response)=>{
+          console.log(response.data)
+          this.userUnavailability.push(...response.data);
+          this.userUnavailability.sort((a, b) => new Date(a.date) - new Date(b.date))
+          useNotificationMessage('success','Uspešno dodata nedostupnost!')
+        })
+    },
+
+    async getUserUnavailabilitiesApi(){
+      await api
+        .get('/unavailability/', )
+        .then((response) => {
+          this.userUnavailability = response.data;
+        })
+    },
+
     async deleteAvailability(id: string){
       await api
-        .delete('/availability/'+id)
+        .delete('/unavailability/'+id)
         .then(()=>{
-          // const index = this.userAvailability.findIndex(el => el.id === id);
-          // if(index !== -1){
-          //   this.userAvailability.splice(index,1)
-          // }
+          const index = this.userUnavailability.findIndex(el => el.id === id);
+          if(index !== -1){
+            this.userUnavailability.splice(index,1)
+          }
           useNotificationMessage('success','Uspešno obrisana dostupnost!')
         })
     },
 
+    async downloadUnavailabilityExcel(){
+      try {
+        const url ='/unavailability/export-unavailabilities'
+        await useDownloadExcel(url, {}, 'nedostupnosti - ' + useCurrentDate());
+
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          useNotificationMessage('error','Nema rezultata!')
+        }
+      }
+    }
     // async getAvailabilitiesApi(){
     //   await api
     //     .get('/availabilities', )

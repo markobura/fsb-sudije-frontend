@@ -21,7 +21,11 @@
 <!--              <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>-->
 <!--            </q-btn>-->
             <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">
-              <BaseTooltip class="bg-teal-9" tooltip="Dostupnost"/>
+              <BaseTooltip class="bg-teal-9" tooltip="Nedostupnost"/>
+            </q-btn>
+            <q-btn size="sm" class="q-ma-sm bg-green text-white" round icon="download" @click="downloadUnavailabilityExcel"
+                   v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'">
+              <BaseTooltip class="bg-green" tooltip="Preuzmi nedostupnosti"/>
             </q-btn>
           </div>
         </q-card-section>
@@ -61,6 +65,7 @@ import UserCreateDialog from 'src/components/UserCreateDialog.vue'
 import BaseTooltip from 'src/components/BaseTooltip.vue'
 import {useRouter} from "vue-router";
 import AvailabilityDialog from "components/AvailabilityDialog.vue";
+import {useUserStore} from "stores/userStore";
 
 const authUserStore = useAuthenticatedUserStore();
 const router = useRouter();
@@ -100,4 +105,7 @@ function openVideoTestPage(){
   });
 }
 
+async function downloadUnavailabilityExcel(){
+  await useUserStore().downloadUnavailabilityExcel();
+}
 </script>
