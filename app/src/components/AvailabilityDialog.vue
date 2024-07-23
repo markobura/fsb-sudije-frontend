@@ -264,7 +264,7 @@ async function addAvailability(){
   })
 
   if(errorFound){
-    useNotificationMessage('error','Krajnje vreme nedostupnosti za datum '+errorFound.date+' je mora biti veće od početnog!')
+    useNotificationMessage('error','Krajnje vreme nedostupnosti za datum '+errorFound.date+' mora biti veće od početnog!')
     return;
   }
 
