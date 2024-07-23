@@ -20,12 +20,12 @@
 <!--            <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="image">-->
 <!--              <BaseTooltip class="bg-primary" tooltip="Postavljanje fotografije"/>-->
 <!--            </q-btn>-->
-            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="event_busy" @click="openAvailabilityDialog">
-              <BaseTooltip class="bg-teal-9" tooltip="Nedostupnost"/>
+            <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="event_busy" @click="openAvailabilityDialog">
+              <BaseTooltip class="bg-primary" tooltip="Nedostupnost"/>
             </q-btn>
-            <q-btn size="sm" class="q-ma-sm bg-green text-white" round icon="download" @click="downloadUnavailabilityExcel"
+            <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="download" @click="downloadUnavailabilityExcel"
                    v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'">
-              <BaseTooltip class="bg-green" tooltip="Preuzmi nedostupnosti"/>
+              <BaseTooltip class="bg-teal-9" tooltip="Preuzmi nedostupnosti"/>
             </q-btn>
           </div>
         </q-card-section>
