@@ -2,7 +2,7 @@
   <q-page v-if="activeTestExist" padding>
     <q-card>
       <q-card-section>
-        <BaseHeader icon="quiz" title="VIDEO TEST"></BaseHeader>
+        <BaseHeader icon="quiz" title="VIDEOs TEST"></BaseHeader>
       </q-card-section>
       <q-separator inset />
       <q-stepper v-model="step" vertical color="primary" animated>
@@ -24,6 +24,9 @@
             >
               <video controls style="max-width: 600px" class="mobile-display">
                 <source :src="question.video" type="video/mp4" />
+                <source :src="question.video" type="video/webm" />
+                <source :src="question.video" type="video/ogg" />
+                <source :src="question.video" type="video/mov" />
               </video>
             </q-item>
             <q-item
