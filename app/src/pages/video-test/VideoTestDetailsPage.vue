@@ -1,224 +1,301 @@
 <template>
-<q-page padding>
+  <q-page padding>
     <q-card>
-      <q-card-section style="display: flex; justify-content: space-between; align-items: center" >
-      <q-item >
+      <q-card-section
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <q-item>
           <q-item-section avatar>
-            <q-icon name="play_circle" size="30px"/>
+            <q-icon name="play_circle" size="30px" />
           </q-item-section>
           <q-item-section>
             <q-item-label class="text-h5">{{ videoTest.name }}</q-item-label>
           </q-item-section>
-      </q-item>
-        <q-btn dense round class="bg-green text-white" icon="add" @click="openAddVideoDialog">
-          <BaseTooltip class="bg-green" tooltip="Dodaj novo pitanje"/>
+        </q-item>
+        <q-btn
+          dense
+          round
+          class="bg-green text-white"
+          icon="add"
+          @click="openAddVideoDialog"
+        >
+          <BaseTooltip class="bg-green" tooltip="Dodaj novo pitanje" />
         </q-btn>
       </q-card-section>
-      <q-separator inset style="margin-bottom: 10px"/>
+      <q-separator inset style="margin-bottom: 10px" />
       <div class="q-pa-md">
-      <q-card-section class="bg-blue-grey-1 q-pa-md"
-        style="border-radius: 20px; margin-bottom: 10px"
-        v-for="answers in videoTest.answers" :key="answers">
-        <div style="display: flex; justify-content: space-between">
-          <span class="text-h6" >{{answers.order_id + '. Pitanje'}}</span>
-          <q-btn style="align-self:flex-start" icon="edit" round class="bg-orange text-white" @click="openUpdateVideoDialog(answers.order_id)"></q-btn>
-        </div>
-        <q-item style="display: flex; justify-content: center; margin-bottom: 20px">
-            <video controls style="max-width: 600px;" class="mobile-display">
-              <source :src="getVideoUrl(answers.order_id)" type="video/mp4"/>
+        <q-card-section
+          class="bg-blue-grey-1 q-pa-md"
+          style="border-radius: 20px; margin-bottom: 10px"
+          v-for="answers in videoTest.answers"
+          :key="answers"
+        >
+          <div style="display: flex; justify-content: space-between">
+            <span class="text-h6">{{ answers.order_id + '. Pitanje' }}</span>
+            <q-btn
+              style="align-self: flex-start"
+              icon="edit"
+              round
+              class="bg-orange text-white"
+              @click="openUpdateVideoDialog(answers.order_id)"
+            ></q-btn>
+          </div>
+          <q-item
+            style="display: flex; justify-content: center; margin-bottom: 20px"
+          >
+            <video controls style="max-width: 600px" class="mobile-display">
+              <source :src="getVideoUrl(answers.order_id)" type="video/mp4" />
+              <source :src="getVideoUrl(answers.order_id)" type="video/webm" />
+              <source :src="getVideoUrl(answers.order_id)" type="video/ogg" />
+              <source :src="getVideoUrl(answers.order_id)" type="video/mov" />
             </video>
-        </q-item>
-        <q-item dense v-for="(answer,index) in answers.answers" :key="answer">
-          <q-item-section>
-            <q-input
-              readonly
-              dense
-              style="width: 100%"
-              filled
-              v-model="answer.answer_text"
-              :label="`Ponuđeni odgovor ${index+1}`"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Ovo polje ne sme biti prazno!']"
-              type="text"
-            />
-          </q-item-section>
-          <q-item-section side >
-            <q-toggle disable color="green" v-model="answer.is_correct"
-                      @update:model-value="updateAnswers(index)"/>
-          </q-item-section>
-        </q-item>
-      </q-card-section>
+          </q-item>
+          <q-item
+            dense
+            v-for="(answer, index) in answers.answers"
+            :key="answer"
+          >
+            <q-item-section>
+              <q-input
+                readonly
+                dense
+                style="width: 100%"
+                filled
+                v-model="answer.answer_text"
+                :label="`Ponuđeni odgovor ${index + 1}`"
+                lazy-rules
+                :rules="[
+                  (val) =>
+                    (val && val.length > 0) || 'Ovo polje ne sme biti prazno!',
+                ]"
+                type="text"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                disable
+                color="green"
+                v-model="answer.is_correct"
+                @update:model-value="updateAnswers(index)"
+              />
+            </q-item-section>
+          </q-item>
+        </q-card-section>
       </div>
     </q-card>
-    <q-dialog full-width persistent v-model="addVideoDialogIsVisible" v-if="addVideoDialogIsVisible">
-    <q-card>
-      <q-card-section class="bg-blue-grey-8 text-white"  style="display: flex; justify-content: space-between; align-items: center">
-        <q-item>
-          <q-item-section>
-            <q-item-label class="text-h5">{{ dialogTitle }}</q-item-label>
-          </q-item-section>
-        </q-item>
-            <q-btn style="margin-left: 10px" v-close-popup icon="close" color="white" flat round></q-btn>
-      </q-card-section>
-      <q-card-section style="max-width: 400px; margin: 15px">
-        <q-file dense outlined color="primary" filled v-model="video"
-                hint="Uploaduj video sa svog uređaja" accept=".mp4, .mov">
-          <template v-slot:append>
-            <q-icon name="cloud_upload" color="primary"/>
-          </template>
-        </q-file>
-      </q-card-section>
-      <q-card-section>
-        <q-item dense v-for="(answer,index) in answers" :key="answer">
-          <q-item-section>
-            <q-input
-              dense
-              style="width: 100%"
-              filled
-              v-model.trim="answer.answer_text"
-              :label="`Ponuđeni odgovor ${index+1}`"
-              lazy-rules
-              hint=""
-              type="text"
-            />
-          </q-item-section>
-          <q-item-section side >
-            <q-toggle color="green" v-model="answer.is_correct"
-                      @update:model-value="updateAnswers(index)"/>
-          </q-item-section>
-        </q-item>
-      </q-card-section>
-      <q-card-section>
-        <q-btn  @click="saveQuestion" label="Sačuvaj pitanje" rounded class="bg-green text-white"/>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
-
-</q-page>
+    <q-dialog
+      full-width
+      persistent
+      v-model="addVideoDialogIsVisible"
+      v-if="addVideoDialogIsVisible"
+    >
+      <q-card>
+        <q-card-section
+          class="bg-blue-grey-8 text-white"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <q-item>
+            <q-item-section>
+              <q-item-label class="text-h5">{{ dialogTitle }}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-btn
+            style="margin-left: 10px"
+            v-close-popup
+            icon="close"
+            color="white"
+            flat
+            round
+          ></q-btn>
+        </q-card-section>
+        <q-card-section style="max-width: 400px; margin: 15px">
+          <q-file
+            dense
+            outlined
+            color="primary"
+            filled
+            v-model="video"
+            hint="Uploaduj video sa svog uređaja"
+            accept=".mp4, .mov"
+          >
+            <template v-slot:append>
+              <q-icon name="cloud_upload" color="primary" />
+            </template>
+          </q-file>
+        </q-card-section>
+        <q-card-section>
+          <q-item dense v-for="(answer, index) in answers" :key="answer">
+            <q-item-section>
+              <q-input
+                dense
+                style="width: 100%"
+                filled
+                v-model.trim="answer.answer_text"
+                :label="`Ponuđeni odgovor ${index + 1}`"
+                lazy-rules
+                hint=""
+                type="text"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                color="green"
+                v-model="answer.is_correct"
+                @update:model-value="updateAnswers(index)"
+              />
+            </q-item-section>
+          </q-item>
+        </q-card-section>
+        <q-card-section>
+          <q-btn
+            @click="saveQuestion"
+            label="Sačuvaj pitanje"
+            rounded
+            class="bg-green text-white"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </q-page>
 </template>
 
 <script setup lang="ts">
-import BaseHeader from 'src/components/BaseHeader.vue'
-import {useRoute} from "vue-router";
-import {useTheoryAndVideoTestStore} from "stores/theoryAndVideoTestStore";
-import useNotificationMessage from "src/composables/notificationMessage";
-import {computed, ref} from "vue";
-import BaseTooltip from 'src/components/BaseTooltip.vue'
+import BaseHeader from 'src/components/BaseHeader.vue';
+import { useRoute } from 'vue-router';
+import { useTheoryAndVideoTestStore } from 'stores/theoryAndVideoTestStore';
+import useNotificationMessage from 'src/composables/notificationMessage';
+import { computed, ref } from 'vue';
+import BaseTooltip from 'src/components/BaseTooltip.vue';
 
 const videoTestStore = useTheoryAndVideoTestStore();
 const route = useRoute();
 
-async function showTest(){
+async function showTest() {
   await videoTestStore.showVideoTest(String(route.params.id));
 }
 showTest();
 
-const videoTest = computed(()=>{
+const videoTest = computed(() => {
   return videoTestStore.getVideoTest;
-})
+});
 
-function getVideoUrl(orderId: number){
-  const index = videoTest.value.urls.findIndex(el => el.order_id === orderId)
+function getVideoUrl(orderId: number) {
+  const index = videoTest.value.urls.findIndex((el) => el.order_id === orderId);
   return index !== -1 ? videoTest.value.urls[index].path : '';
 }
 
-const addVideoDialogIsVisible = ref(false)
-const dialogTitle = ref('Novo pitanje')
-const questionOrderId = ref(0)
+const addVideoDialogIsVisible = ref(false);
+const dialogTitle = ref('Novo pitanje');
+const questionOrderId = ref(0);
 
-
-
-function openAddVideoDialog(){
-  addVideoDialogIsVisible.value = true
-  video.value = null
+function openAddVideoDialog() {
+  addVideoDialogIsVisible.value = true;
+  video.value = null;
   answers.value = [
-    {answer_text: '',is_correct: false},
-    {answer_text: '',is_correct: false},
-    {answer_text: '',is_correct: false},
-    {answer_text: '',is_correct: false}
-  ]
-  dialogTitle.value = 'Novo pitanje'
-  questionOrderId.value = videoTest.value.answers ? videoTest.value.answers.length + 1 : 1;
+    { answer_text: '', is_correct: false },
+    { answer_text: '', is_correct: false },
+    { answer_text: '', is_correct: false },
+    { answer_text: '', is_correct: false },
+  ];
+  dialogTitle.value = 'Novo pitanje';
+  questionOrderId.value = videoTest.value.answers
+    ? videoTest.value.answers.length + 1
+    : 1;
 }
 
-function openUpdateVideoDialog(orderId: number){
-  addVideoDialogIsVisible.value = true
-  video.value = null
-  const index =  videoTest.value.answers.findIndex(el => el.order_id === orderId)
-  if(index !== -1){
+function openUpdateVideoDialog(orderId: number) {
+  addVideoDialogIsVisible.value = true;
+  video.value = null;
+  const index = videoTest.value.answers.findIndex(
+    (el) => el.order_id === orderId
+  );
+  if (index !== -1) {
     answers.value = videoTest.value.answers[index].answers;
   }
-  dialogTitle.value = 'Ažuriranje ' + orderId + '. pitanja'
-  questionOrderId.value = orderId
+  dialogTitle.value = 'Ažuriranje ' + orderId + '. pitanja';
+  questionOrderId.value = orderId;
 }
 
-const video = ref()
+const video = ref();
 
 const answers = ref([
-  {answer_text: '',is_correct: false},
-  {answer_text: '',is_correct: false},
-  {answer_text: '',is_correct: false},
-  {answer_text: '',is_correct: false}
-])
+  { answer_text: '', is_correct: false },
+  { answer_text: '', is_correct: false },
+  { answer_text: '', is_correct: false },
+  { answer_text: '', is_correct: false },
+]);
 
-function updateAnswers(answerIndex: number){
-  answers.value.forEach((el,index) => {
-    if(index !== answerIndex){
-      el.is_correct = false
+function updateAnswers(answerIndex: number) {
+  answers.value.forEach((el, index) => {
+    if (index !== answerIndex) {
+      el.is_correct = false;
     }
-  })
+  });
 }
 
-async function saveQuestion(){
-  let nonEmptyAnswers = answers.value.filter(answer =>  answer.answer_text !== '')
+async function saveQuestion() {
+  let nonEmptyAnswers = answers.value.filter(
+    (answer) => answer.answer_text !== ''
+  );
 
-  if(nonEmptyAnswers.length < 2){
-    useNotificationMessage('error','Morate uneti najmanje 2 odgovora!');
+  if (nonEmptyAnswers.length < 2) {
+    useNotificationMessage('error', 'Morate uneti najmanje 2 odgovora!');
     return false;
   }
 
-  const index2 = answers.value.findIndex(el => {
+  const index2 = answers.value.findIndex((el) => {
     return el.is_correct;
   });
 
-  if(index2 === -1){
-    useNotificationMessage('error','Niste obeležili tačan odgovor!');
+  if (index2 === -1) {
+    useNotificationMessage('error', 'Niste obeležili tačan odgovor!');
     return false;
   }
 
-  if(dialogTitle.value === 'Novo pitanje'){
-    if(!video.value){
-      useNotificationMessage('error','Morate uploadovati video!')
-      return
+  if (dialogTitle.value === 'Novo pitanje') {
+    if (!video.value) {
+      useNotificationMessage('error', 'Morate uploadovati video!');
+      return;
     }
-
 
     const request = new FormData();
 
-    request.append('video',video.value);
+    request.append('video', video.value);
 
-    await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'store');
+    await videoTestStore.uploadVideo(
+      request,
+      String(route.params.id),
+      questionOrderId.value,
+      'store'
+    );
 
-      for (let i = answers.value.length - 1; i >= 0; i--) {
-        const answer = answers.value[i];
-        if (!answer.is_correct && answer.answer_text === '') {
-          answers.value.splice(i, 1);
-        }
+    for (let i = answers.value.length - 1; i >= 0; i--) {
+      const answer = answers.value[i];
+      if (!answer.is_correct && answer.answer_text === '') {
+        answers.value.splice(i, 1);
       }
-    await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value, 'store');
-    addVideoDialogIsVisible.value = false
-  }else{
-   await updateQuestion()
+    }
+    await videoTestStore.addAnswers(
+      answers.value,
+      String(route.params.id),
+      questionOrderId.value,
+      'store'
+    );
+    addVideoDialogIsVisible.value = false;
+  } else {
+    await updateQuestion();
   }
-
-
-
-
 }
 
-
-async function updateQuestion(){
-
+async function updateQuestion() {
   // const index = answers.value.findIndex(el => {
   //   return el.answer_text === '';
   // })
@@ -228,13 +305,17 @@ async function updateQuestion(){
   //   return false;
   // }
 
-
-  if(video.value){
+  if (video.value) {
     const request = new FormData();
 
-    request.append('video',video.value);
+    request.append('video', video.value);
 
-    await videoTestStore.uploadVideo(request, String(route.params.id), questionOrderId.value, 'update');
+    await videoTestStore.uploadVideo(
+      request,
+      String(route.params.id),
+      questionOrderId.value,
+      'update'
+    );
   }
 
   for (let i = answers.value.length - 1; i >= 0; i--) {
@@ -244,13 +325,15 @@ async function updateQuestion(){
     }
   }
 
-  await videoTestStore.addAnswers(answers.value, String(route.params.id),questionOrderId.value,  'update');
+  await videoTestStore.addAnswers(
+    answers.value,
+    String(route.params.id),
+    questionOrderId.value,
+    'update'
+  );
 
-  addVideoDialogIsVisible.value = false
-
-
+  addVideoDialogIsVisible.value = false;
 }
-
 </script>
 
 <style scoped>

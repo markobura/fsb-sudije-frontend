@@ -2,7 +2,7 @@
   <q-page v-if="activeTestExist" padding>
     <q-card>
       <q-card-section>
-        <BaseHeader icon="quiz" title="VIDEOs TEST"></BaseHeader>
+        <BaseHeader icon="quiz" title="VIDEO TEST"></BaseHeader>
       </q-card-section>
       <q-separator inset />
       <q-stepper v-model="step" vertical color="primary" animated>
