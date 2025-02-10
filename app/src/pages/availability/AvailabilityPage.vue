@@ -88,7 +88,7 @@ const availabilities = computed(function () {
 const filterTable = ref('');
 const columns = useAvailabilityTableColumns()
 
-const leagueOptions = ['SVE','MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
+const leagueOptions = ['SVE','TMP','FUTSAL','MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
 let league = ref('SVE');
 
 const startDate = ref(useCurrentDate());
