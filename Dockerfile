@@ -12,4 +12,4 @@ RUN quasar build
 
 
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["quasar","dev"]
