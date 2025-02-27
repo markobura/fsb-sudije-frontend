@@ -11,5 +11,5 @@ RUN npm install
 RUN quasar build
 
 
-EXPOSE 3000
+EXPOSE 9000
 CMD ["quasar","dev"]
