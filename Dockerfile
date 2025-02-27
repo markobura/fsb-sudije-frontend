@@ -12,6 +12,7 @@ RUN quasar build
 
 
 FROM nginx:1.23.2-alpine as production-stage
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /app/dist/spa /usr/share/nginx/html
 EXPOSE 9000
 CMD ["nginx", "-g", "daemon off;"]
