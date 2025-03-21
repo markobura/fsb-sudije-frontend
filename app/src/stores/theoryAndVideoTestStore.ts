@@ -111,9 +111,8 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
       } catch (error: unknown) {
         if (error instanceof Error) {
           console.error('Greška prilikom dobijanja aktivnog testa:', error);
-        } else {
-          this.activeTestExist = false;
         }
+          this.activeTestExist = false;
       }
     },
 
