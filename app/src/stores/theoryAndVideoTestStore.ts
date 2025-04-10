@@ -111,8 +111,6 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
 
       }
       catch (error: any) {
-        this.activeTestExist = false;
-        this.activeTest = {}
         if (error.response && error.response.status === 404) {
           this.activeTestExist = false;
           this.activeTest = {}
