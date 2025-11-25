@@ -105,7 +105,7 @@ const columns = useAvailabilityTableColumns();
 const leagueOptions = [
   'SVE',
   'TMP',
-  'FUTSAL','KIPAR',
+  'FUTSAL','ŠKOLA SUĐENJA',
   'MLADJE KATEGORIJE',
   'MEDJUOPSTINSKA LIGA',
   'PRVA BEOGRADSKA LIGA',

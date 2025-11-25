@@ -211,7 +211,7 @@ const role = ref(roleOptions[0]);
 
 const leagueOptions = [
   'TMP',
-  'FUTSAL','KIPAR',
+'FUTSAL','ŠKOLA SUĐENJA',
   'MLADJE KATEGORIJE',
   'MEDJUOPSTINSKA LIGA',
   'PRVA BEOGRADSKA LIGA',

@@ -198,7 +198,7 @@ let date = ref(useCurrentDate());
 let startTime = ref('10:00');
 let endTime = ref('11:00');
 
-const leagueOptions = ['TMP','FUTSAL','KIPAR','MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
+const leagueOptions = ['TMP','FUTSAL','ŠKOLA SUĐENJA','MLADJE KATEGORIJE','MEDJUOPSTINSKA LIGA','PRVA BEOGRADSKA LIGA', 'ZONSKA LIGA','SRPSKA LIGA','PRVA LIGA SRBIJE', 'SUPER LIGA SRBIJE'];
 let league = ref([]);
 
 const refereeTypeOptions = ['SUDIJA', 'POMOĆNI SUDIJA','DELEGAT'];
