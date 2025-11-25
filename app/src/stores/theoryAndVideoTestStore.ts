@@ -108,13 +108,17 @@ export const useTheoryAndVideoTestStore = defineStore('theoryAndVideoTestStore',
             })
         })
         this.activeTestExist = true;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Greška prilikom dobijanja aktivnog testa:', error);
-        } else {
+
+      }
+      catch (error: any) {
+        if (error.response && error.response.status === 404) {
           this.activeTestExist = false;
+          this.activeTest = {}
+        } else {
+          console.error('Greška prilikom dobijanja aktivnog testa:', error);
         }
       }
+
     },
 
     async getActiveVideoTestApi(){
