@@ -23,9 +23,16 @@
             <q-btn size="sm" class="q-ma-sm bg-primary text-white" round icon="event_busy" @click="openAvailabilityDialog">
               <BaseTooltip class="bg-primary" tooltip="Nedostupnost"/>
             </q-btn>
+            <q-btn size="sm" class="q-ma-sm bg-green-8 text-white" round icon="how_to_reg" @click="openCancellationApplicationDialog">
+              <BaseTooltip class="bg-green-8" tooltip="Prijavi se za otkaze"/>
+            </q-btn>
             <q-btn size="sm" class="q-ma-sm bg-teal-9 text-white" round icon="download" @click="downloadUnavailabilityExcel"
                    v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'">
               <BaseTooltip class="bg-teal-9" tooltip="Preuzmi nedostupnosti"/>
+            </q-btn>
+            <q-btn size="sm" class="q-ma-sm bg-deep-orange-8 text-white" round icon="file_download" @click="downloadCancellationApplicationsExcel"
+                   v-if="useAuthenticatedUserStore().getUser.role === 'FSB ADMIN'">
+              <BaseTooltip class="bg-deep-orange-8" tooltip="Preuzmi prijave za otkaze"/>
             </q-btn>
           </div>
         </q-card-section>
@@ -53,6 +60,7 @@
       :user="user"
     ></UserCreateDialog>
     <AvailabilityDialog v-model="availabilityDialogIsVisible" v-if="availabilityDialogIsVisible"/>
+    <CancellationApplicationDialog v-model="cancellationApplicationDialogIsVisible" v-if="cancellationApplicationDialogIsVisible"/>
   </q-page>
 </template>
 
@@ -65,6 +73,7 @@ import UserCreateDialog from 'src/components/UserCreateDialog.vue'
 import BaseTooltip from 'src/components/BaseTooltip.vue'
 import {useRouter} from "vue-router";
 import AvailabilityDialog from "components/AvailabilityDialog.vue";
+import CancellationApplicationDialog from "components/CancellationApplicationDialog.vue";
 import {useUserStore} from "stores/userStore";
 
 const authUserStore = useAuthenticatedUserStore();
@@ -87,6 +96,12 @@ function openAvailabilityDialog(){
   availabilityDialogIsVisible.value = true
 }
 
+const cancellationApplicationDialogIsVisible = ref(false);
+
+function openCancellationApplicationDialog(){
+  cancellationApplicationDialogIsVisible.value = true
+}
+
 const isCreateUserDialogVisible = ref(false);
 
 function toggleUserCreationDialog() {
@@ -107,5 +122,9 @@ function openVideoTestPage(){
 
 async function downloadUnavailabilityExcel(){
   await useUserStore().downloadUnavailabilityExcel();
+}
+
+async function downloadCancellationApplicationsExcel(){
+  await useUserStore().downloadCancellationApplicationsExcel();
 }
 </script>

@@ -13,12 +13,14 @@ export const useUserStore = defineStore('userStore', {
     userDetails: {} as User,
     users: [] as User[],
     userUnavailability: [] as {id: string, user_id: string, date: string, start_time: string, end_time: string, reason: string}[],
+    userCancellationApplications: [] as {id: string, user_id: string, date: string, start_time: string, end_time: string, note: string}[],
     // availabilities: [] as any[]
   }),
   getters: {
     getUsers: (state) => state.users,
     getUserDetails: (state) => state.userDetails,
     getUserUnavailability: (state) => state.userUnavailability,
+    getUserCancellationApplications: (state) => state.userCancellationApplications,
     // getAvailabilities: (state) => state.availabilities
   },
   actions: {
@@ -122,7 +124,56 @@ export const useUserStore = defineStore('userStore', {
           useNotificationMessage('error','Nema rezultata!')
         }
       }
-    }
+    },
+
+    async addCancellationApplications(request: {cancellation_applications: {date: string, start_time: string, end_time: string, note: string}[]}){
+      await api
+        .post('/cancellation-application/', request)
+        .then((response)=>{
+          this.userCancellationApplications.push(...response.data);
+          this.userCancellationApplications.sort((a, b) =>
+            (a.date + a.start_time).localeCompare(b.date + b.start_time)
+          )
+          useNotificationMessage('success','Uspešno ste se prijavili za otkaze!')
+        })
+    },
+
+    async getUserCancellationApplicationsApi() {
+      try {
+        const response = await api.get('/cancellation-application/');
+        this.userCancellationApplications = response.data;
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          this.userCancellationApplications = [];
+        } else {
+          console.error(error);
+        }
+      }
+    },
+
+    async deleteCancellationApplication(id: string){
+      await api
+        .delete('/cancellation-application/'+id)
+        .then(()=>{
+          const index = this.userCancellationApplications.findIndex(el => el.id === id);
+          if(index !== -1){
+            this.userCancellationApplications.splice(index,1)
+          }
+          useNotificationMessage('success','Uspešno obrisana prijava za otkaze!')
+        })
+    },
+
+    async downloadCancellationApplicationsExcel(){
+      try {
+        const url ='/cancellation-application/export-cancellation-applications'
+        await useDownloadExcel(url, {}, 'prijave za otkaze - ' + useCurrentDate());
+
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          useNotificationMessage('error','Nema rezultata!')
+        }
+      }
+    },
     // async getAvailabilitiesApi(){
     //   await api
     //     .get('/availabilities', )
