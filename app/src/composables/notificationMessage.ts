@@ -6,6 +6,8 @@ export enum NotificationType {
 }
 export default function useNotificationMessage( type: string, message: string){
 
+  console.log('Notification message: ', type, message)
+
   switch(type){
 
     case(NotificationType.SUCCESS):
@@ -19,6 +21,8 @@ export default function useNotificationMessage( type: string, message: string){
       break;
 
     case(NotificationType.ERROR):
+
+    console.log('test')
       Notify.create({
         color: 'red-7',
         textColor: 'white',

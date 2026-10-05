@@ -37,7 +37,7 @@
                 <span>{{useUIFormat(props.row.date)}}</span>
               </q-td>
               <q-td key="time" :props="props">
-                <span>{{formatTime(props.row.start_time) + ' - ' + formatTime(props.row.end_time)}}</span>
+                <span>{{formatTimeDisplay(props.row.start_time, props.row.end_time)}}</span>
               </q-td>
               <q-td key="note" :props="props">
                 <span>
@@ -125,6 +125,7 @@
                     <th class="text-left">Datum</th>
                     <th class="text-center">Od</th>
                     <th class="text-center">Do</th>
+                    <th></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -161,9 +162,52 @@
                           </template>
                         </q-input>
                       </td>
+                      <td class="text-center">
+                        <q-btn v-if="!day.hasExtraTime" round flat icon="add" color="green" size="sm" @click="day.hasExtraTime = true">
+                          <BaseTooltip class="bg-green" tooltip="Dodaj drugi termin"/>
+                        </q-btn>
+                      </td>
+                    </tr>
+                    <tr v-if="day.hasExtraTime" :class="['date-row', index % 2 === 0 ? 'bg-blue-grey-1':'']">
+                      <td class="text-left" style=" padding-left: 16px">{{day.date}}</td>
+                      <td class="text-center">
+                        <q-input style="width: 89px" outlined v-model="day.extraStartTime" mask="time" readonly dense>
+                          <template v-slot:append>
+                            <q-icon name="access_time" class="cursor-pointer" color="green">
+                              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                <q-time v-model="day.extraStartTime">
+                                  <div class="row items-center justify-end">
+                                    <q-btn v-close-popup label="Ok" color="primary" flat />
+                                  </div>
+                                </q-time>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
+                      </td>
+                      <td class="text-center">
+                        <q-input style="width: 89px" outlined v-model="day.extraEndTime" mask="time" readonly dense>
+                          <template v-slot:append>
+                            <q-icon name="access_time" class="cursor-pointer" color="red">
+                              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                <q-time v-model="day.extraEndTime">
+                                  <div class="row items-center justify-end">
+                                    <q-btn v-close-popup label="Ok" color="primary" flat />
+                                  </div>
+                                </q-time>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
+                      </td>
+                      <td class="text-center">
+                        <q-btn round flat icon="remove" color="red" size="sm" @click="day.hasExtraTime = false">
+                          <BaseTooltip class="bg-red" tooltip="Ukloni drugi termin"/>
+                        </q-btn>
+                      </td>
                     </tr>
                     <tr :class="index % 2 === 0 ? 'bg-blue-grey-1':''">
-                      <td colspan="3" class="note-cell">
+                      <td colspan="4" class="note-cell">
                         <q-input
                           v-model="day.note"
                           outlined
@@ -225,9 +269,13 @@ async function getUserCancellationApplications(){
 }
 getUserCancellationApplications();
 
-// Backend vraca vreme u formatu HH:MM:SS
-function formatTime(time: string){
-  return time.substring(0, 5);
+function formatTimeDisplay(startTime: string, endTime: string): string {
+  if (startTime.includes(' - ')) {
+    // Dva termina: start_time = "HH:MM - HH:MM", end_time = "HH:MM - HH:MM"
+    return startTime + ' | ' + endTime
+  }
+  // Jedan termin: backend vraca HH:MM:SS format
+  return startTime.substring(0, 5) + ' - ' + endTime.substring(0, 5)
 }
 
 const createDialogIsVisible = ref(false);
@@ -253,21 +301,28 @@ function deleteCancellationApplication(id: string){
 
 const selectedDays = ref<string[]>([])
 function optionsFn (calendarDate: string) {
-  const today = useDBFormat(useCurrentDate()).replace(/-/g, "/");
-  const newDate = date.addToDate(new Date(), { days: 30 });
-  const thirtyDaysAfterToday = useDBFormat(date.formatDate(newDate,'DD.MM.YYYY')).replace(/-/g, "/");
+  const todayDay = new Date().getDay() // 0=ned, 1=pon, 2=uto, 3=sre, 4=čet, 5=pet, 6=sub
+
+  // Broj dana do naredne subote/nedjelje (min 1 dan unaprijed)
+  const daysToNextSat = ((6 - todayDay + 7) % 7) || 7
+  const daysToNextSun = ((0 - todayDay + 7) % 7) || 7
+
+  const nextSatStr = date.formatDate(date.addToDate(new Date(), { days: daysToNextSat }), 'YYYY/MM/DD')
+  const nextSunStr = date.formatDate(date.addToDate(new Date(), { days: daysToNextSun }), 'YYYY/MM/DD')
 
   const alreadyApplied = userStore.getUserCancellationApplications.map(el => {
     return (el.date).replaceAll('-','/')
   })
 
-  return (calendarDate >= today && calendarDate <= thirtyDaysAfterToday) && !alreadyApplied.includes(calendarDate)
+  return (calendarDate === nextSatStr || calendarDate === nextSunStr) && !alreadyApplied.includes(calendarDate)
 }
 
 async function addCancellationApplications(){
 
-  const errorFound = cancellationDatesAndTimes.value.find((el)=>{
-    return el.startTime >= el.endTime
+  const errorFound = cancellationDatesAndTimes.value.find((el) => {
+    if (el.startTime >= el.endTime) return true
+    if (el.hasExtraTime && el.extraStartTime >= el.extraEndTime) return true
+    return false
   })
 
   if(errorFound){
@@ -280,8 +335,8 @@ async function addCancellationApplications(){
       cancellationDatesAndTimes.value.map(el => {
         return {
           date: useDBFormat(el.date),
-          start_time: el.startTime,
-          end_time: el.endTime,
+          start_time: el.hasExtraTime ? el.startTime + ' - ' + el.endTime : el.startTime,
+          end_time: el.hasExtraTime ? el.extraStartTime + ' - ' + el.extraEndTime : el.endTime,
           note: el.note.trim()
         }
       })
@@ -303,6 +358,9 @@ interface CancellationDateTime {
   startTime: string;
   endTime: string;
   note: string;
+  hasExtraTime: boolean;
+  extraStartTime: string;
+  extraEndTime: string;
 }
 const cancellationDatesAndTimes = ref<CancellationDateTime[]>([]);
 
@@ -320,7 +378,10 @@ function setTimeList(){
       date: el,
       startTime: '00:00',
       endTime: '23:59',
-      note: ''
+      note: '',
+      hasExtraTime: false,
+      extraStartTime: '00:00',
+      extraEndTime: '23:59'
     }
   }).sort((a: CancellationDateTime, b: CancellationDateTime) => {
     // Pretvaranje datuma iz "DD.MM.YYYY" u "YYYY-MM-DD" format za poređenje

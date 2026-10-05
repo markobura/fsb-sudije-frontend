@@ -72,7 +72,10 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf (viteConf) {
+        viteConf.server = viteConf.server || {}
+        viteConf.server.watch = { usePolling: true, interval: 1000 }
+      },
       // viteVuePluginOptions: {},
 
 

@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 include ./.env.docker
 
 env:
@@ -5,9 +6,7 @@ env:
 	cat $(PWD)/.env.local >> $(PWD)/app/.env
 
 fix-env:
-	if [ -a $(PWD)/app/.env ]; \
-		then rm -f $(PWD)/app/.env; \
-	fi
+	rm -f $(PWD)/app/.env
 	touch $(PWD)/app/.env
 
 up:

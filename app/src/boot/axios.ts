@@ -17,6 +17,8 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
+
+console.log('process.env.BACKEND_APP_BASE_URL: ', process.env.BACKEND_APP_BASE_URL)
 const api = axios.create({ baseURL: process.env.BACKEND_APP_BASE_URL });
 
 let url;
@@ -24,6 +26,7 @@ let url;
 api.interceptors.request.use((config)=>{
   Loading.show();
   url = config.url;
+  console.log('Request URL: ', url)
   if(useRouteRequiresAuth(`${config.url}`)){
     config.headers['Authorization'] = `Bearer ${Cookies.get('userSessionToken')}`
   }
@@ -39,6 +42,7 @@ api.interceptors.response.use((response)=>{
 
 
   Loading.hide();
+
 
   if(useHandleErrors(error.response.status, error.response.data.errors)){
     if(url !== '/auth/token'){

@@ -75,9 +75,17 @@ import {useRouter} from "vue-router";
 import AvailabilityDialog from "components/AvailabilityDialog.vue";
 import CancellationApplicationDialog from "components/CancellationApplicationDialog.vue";
 import {useUserStore} from "stores/userStore";
+import useNotificationMessage from "src/composables/notificationMessage";
 
 const authUserStore = useAuthenticatedUserStore();
 const router = useRouter();
+
+// Dani kada je prijava otkaza dostupna (0=ned, 1=pon, 2=uto, 3=sre, 4=čet, 5=pet, 6=sub)
+const CANCELLATION_APPLICATION_DAYS = [1, 2] // ponedeljak i utorak
+const CANCELLATION_DAY_NAMES: Record<number, string> = {
+  0: 'nedeljom', 1: 'ponedeljkom', 2: 'utorkom',
+  3: 'sredom', 4: 'četvrtkom', 5: 'petkom', 6: 'subotom'
+}
 
 const user = computed(()=>{
   return authUserStore.getUser;
@@ -99,6 +107,12 @@ function openAvailabilityDialog(){
 const cancellationApplicationDialogIsVisible = ref(false);
 
 function openCancellationApplicationDialog(){
+
+  if (!CANCELLATION_APPLICATION_DAYS.includes(new Date().getDay())) {
+    const daysList = CANCELLATION_APPLICATION_DAYS.map(d => CANCELLATION_DAY_NAMES[d]).join(' i ')
+    useNotificationMessage('error', `Prijava za otkaze je dostupna samo ${daysList}, nakon delegiranja.`)
+    return
+  }
   cancellationApplicationDialogIsVisible.value = true
 }
 
