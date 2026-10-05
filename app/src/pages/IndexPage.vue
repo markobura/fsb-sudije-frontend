@@ -81,7 +81,7 @@ const authUserStore = useAuthenticatedUserStore();
 const router = useRouter();
 
 // Dani kada je prijava otkaza dostupna (0=ned, 1=pon, 2=uto, 3=sre, 4=čet, 5=pet, 6=sub)
-const CANCELLATION_APPLICATION_DAYS = [4,5] // ponedeljak i utorak
+const CANCELLATION_APPLICATION_DAYS = [1,2] // ponedeljak i utorak
 const CANCELLATION_DAY_NAMES: Record<number, string> = {
   0: 'nedeljom', 1: 'ponedeljkom', 2: 'utorkom',
   3: 'sredom', 4: 'četvrtkom', 5: 'petkom', 6: 'subotom'
